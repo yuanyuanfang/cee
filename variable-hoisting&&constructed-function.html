@@ -1,0 +1,347 @@
+ 						变量提升&&构造函数
+1.js 运行三部曲
+（1）语法分析
+（2）预编译
+（3）解释执行
+（1）语法分析：扫描全文先分析低级语法错误
+（2）预编译
+预编译前奏：
+1))imply global暗示全局变量：即任何变量未经声明就赋值，此变量就为全局变量对象所有。
+01
+document.write(a);
+a=123;
+document.write(a);
+document.write(window.a);
+02
+function test(){
+	var a=b=0;
+}
+test();
+document.write(window.a);
+result:undefined
+document.write(window.b);
+result:0
+//优先级顺序自右向左，b声明省略，b归全局对象所有
+2))一切声明的全局变量，全是window的属性
+1. 函数声明提升（整体提升）
+01
+test();
+function test(){
+	document.write('a');
+}
+result:a
+2)变量声明提升（局部提升）
+01
+document.write(test);                 
+var test='abc';                
+result:有值，值为undefined
+<==>
+var test;
+document.write(test);
+test='abc';
+result:有值，值为undefined
+02eg:
+var abc=234;
+function test(){
+	document.write(abc);
+	var abc=123;
+}
+test();
+result:undefined
+<==>
+var abc=234;
+function test(){
+  var abc;
+  document.write(abc);
+  abc=123;
+   }
+   test();
+result:undefined
+预编译
+四部曲：
+(1)创建AO对象
+(2)找形参和变量声明，将变量和形参名作为AO属性名，值为undefinded
+(3)将实参和形参统一
+(4)在函数里面找函数声明，值赋予函数体
+
+01eg
+function test(a,b){
+	document.write(a);
+	function a(){}
+	a=222;
+	document.write(a);
+	function b(){};
+	document.write(b);
+	var b=111;
+	var a;
+}
+test(1);
+Result:function a(){}222function b(){}
+//Activation Object={
+	a:undefined-->1-->function(){}-->222
+	b:undefined-->function(){}-->111
+}
+02eg
+function fn(a){
+	document.write(a);
+	var a=123;
+	document.write(a);
+	function a(){}
+	document.write(b);
+	var b=function(){}
+	document.write(b);
+	function d(){}
+}
+fn(1);
+Result:functiona(){}123undefinedfunction(){}
+// Ao={
+// 	a:undefined-->1-->function(){}-->123
+// 	b:undefined-->function(){}
+// 	d；function(){}
+// }
+03eg
+function test(a,b){
+	document.write(a);//1
+	c=0;
+	document.write(c);//0
+	var c；
+	a=3;
+	b=2;
+	document.write(b);//2
+	function b(){}
+	function d(){}
+	document.write(b);//2
+}
+AO={
+	a:undefined-->1
+	b:undefined-->function(){}
+	c:undefined-->function(){}
+	d：undefined-->function(){}
+
+}
+04eg
+function bar(){
+	return foo;
+	foo=10;
+	function foo(){
+
+	}
+	var foo=11;
+}
+document.write(bar());
+Result:function foo(){}
+05eg
+document.write(bar());
+function bar(){
+	
+	foo=10;
+	function foo(){
+
+	}
+	var foo=11;
+	return foo;
+}
+Result:11
+06eg
+function test(b){
+	document.write(a);//undefined
+	if(1>5){
+		var a=123;
+		function b(){}//不走if
+	}
+	document.write(a);//undefined
+	document.write(b);//function b(){}
+	var b=234;
+
+}
+test(2);
+07eg
+var a=5;
+function test(){
+	a=0;
+	alert(a);
+	alert(this.a);//5
+	var a;
+	alert(a);//0
+}
+*AO={
+This:window,
+Argument:[]
+}
+08eg
+a=100;
+function demo(e){
+	function e(){}
+	arguments[0]=2;
+	document.write(e);
+	if(a){
+		var b=123;
+		function c(){
+
+		}
+	}
+	var c;
+	a=10;
+	var a;
+	document.write(b);
+	f=123;
+	document.write(c);
+	document.write(a);
+}
+var a;
+demo(1);
+document.write(a);//100
+document.write(f);//123
+A0={
+	this:window
+	arguments:[1]
+	e:undefined-->1-->function(){}-->2
+	b:undefined-->
+	c:undefined-->function(){}
+	a:undefined-->10
+}
+window.f=123;
+2对象
+var objDeng={
+	name:"yan",
+	age:30,
+	height:168,
+	husband:"deng",
+	eat:function(){
+		this.height++;
+	}
+
+}
+objDeng.eat();
+objDeng.eat();
+objDeng.eat();
+document.write(objDeng.height);
+属性增删改查
+var obj={
+	name:"sunny",
+	face:"perfect"
+}
+obj.height=180;
+obj.eat=function(){
+	this.height++;
+}
+obj.eat();
+document.write(obj.height);
+//增加
+obj.name="ooo";
+document.write(obj.name);
+//更改
+delete obj.name;
+document.write(obj.name);
+//删除
+document.write(obj.age);//不报错
+document.write(a.height);//报错
+对象的创建方法
+字面量/直接量
+var obj={}
+构造函数：
+        系统自带：new Object(){}Array(){}Number(){}Bulean(){}Date(){}
+自定义：
+function Object(){
+//首字母大写
+}
+var obj=new Object();
+obj.name='sunny';
+obj.age=19;
+document.write(obj.name);
+01eg
+function Person(name ,height,sex){
+
+this.name=name;
+this.height=height;
+this.sex=sex;
+this.eat=function(){
+	this.height++;
+}
+}
+VaroPerson=new Person('sunny',180,'female');
+oPerson.eat();
+document.write(oPerson.height);
+varoPerson1=new Person('cherry',160,'female');
+document.write(oPerson1.height);
+document.write(typeof(oPerson));
+oPerson.name='sunny';
+document.write(oPerson.name);
+result:181 160object sunny
+function Person(name ,height,sex){
+
+this.name=name;
+this.height=height;
+this.sex=sex;
+this.eat=function(){
+	this.height++;
+}}
+ var oPerson =  Person('sunny',180,'female');
+document.write(oPerson);
+document.write(window.name);
+result:undefined sunny
+
+构造函数内部原理
+function Person(name ,height,sex){
+var this={
+	name:'sunny',
+	height:183,
+	sex:'male'
+};//隐式//相当于
+this.name=name;
+this.height=height;
+this.sex=sex;
+this.eat=function(){
+	this.height++;
+}
+return this;//隐式因为有new
+}
+new Person();/var oPerson=new Person('sunny',183,'male');
+02eg
+function Person(){
+	var that={};
+	that.name='sunny';
+	this.name='cherry';
+	that.age=183;
+	return that;
+}
+var oPerson=new Person();
+document.write(oPerson.name);//sunny
+显示的返回对象，那么this就失效。如果显示返回的是原始值，那么this依然生效
+03eg
+function Person(){
+	var that={};
+	that.name='sunny';
+	this.name='cherry';
+	that.age=183;
+	return 123;
+}
+var oPerson=new Person();
+document.write(oPerson.name);//cherry
+3包装类
+：string boolean number
+原始值string  boolean number undefined null
+01eg
+var str='abcd';
+//var str1=new String('abcd');//隐式
+document.write(str.length);//4
+02eg
+var str=new String('abcd');// 字符串类对象
+document.write(str.length);//4
+document.write(str);//abcd
+document.write(typeof(str));//object
+
+var str="abc";
+//var str1=new String('abc');隐式
+//str1.len=4;
+str.len=4;
+//var str2=new String('abc');隐式
+//document.write(str2.len);
+document.write(str.len);//undefined
+var bool=true;
+//var bool1=new Boolean(true);
+//bool1.abc=123;
+bool.abc=123;
+//var bool2=new Boolean(true);bool.abc;
+document.write(bool.abc);//undefined
+

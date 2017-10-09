@@ -1,0 +1,143 @@
+
+作用域初探
+作用域定义：变量（变量作用域又称为上下文）和函数生效（能被访问）的区域全局，局部变量
+作用域的访问顺序
+javascript的函数，可以产生作用域
+函数可以看到外面，外面访问不了里面的属性，不同作用域间无法互相访问。
+代码 function a(){
+        function b(){
+          var b=234;
+        }
+        var a=123;
+        b();
+      }
+      var gbb=100;
+      a();
+a函数被定义时，会保存全局变量或属性
+[[scope]]:每个javascript都是一个对象，对象中有些属性我们可以访问，但有些不可以，这些属性只供javascript引擎存取，[[scope]]就是其中一个。
+[[scope]]指的是我们所说的作用域，其中存储了运行期上下文的集合。
+作用域链：[[scope]]中所存储的执行上下文对象的集合，这个集合成链式连接，我们把这种链式连接称为作用域链
+执行期上下文：当函数执行时会创建一个称为执行期上下文的内部对象。一个执行期上下文定义了一个函数执行时的环境，函数每次执行时对应的执行期上下文都是独一无二的，所以多次调用一个函数 会导致创建多个执行期上下文，当函数执行完毕，执行期上下文被销毁。
+查找变量：从作用域的顶端依次向下查找
+eg：先查找a再查找全局
+分析：a执行会产生一个效果：定义了被b，b定义时 所处环境为a，a的劳动成果和全局的上下文
+b的执行作用域链 0 b
+                1  a
+                2  全局
+闭包：当内部函数被保存到外部时，将会生成闭包。闭包会导致原有作用域l链不释放，造成内存泄漏。
+function a(){
+        function b(){
+          var bbb=234;
+          document.write(aaa);
+        }
+        var aaa=123;
+        return b;
+      }
+      var gbbb=100;
+      var demo=a();
+      demo();
+闭包的作用
+      实现共有变量
+       Eg函数累加器
+function add(){
+        var num=0;
+        function b(){
+          num++;
+          document.write(num);
+
+        }
+        return b;
+      }
+      var testAdd=Add();
+      testAdd();
+      testAdd();
+      testAdd();
+可以做缓存
+Eg：eater
+  function eater(){
+      var fruit="";
+      
+      return{
+        eat:function(){
+          if(fruit!=""){
+            document.write('I am eating'+fruit);
+            fruit="";
+          }else{
+            document.write('There is nothing!');
+          }
+        },
+        put:function(myFruit){
+          fruit=myFruit;
+        }
+
+      }
+}
+var eater1=eater();
+eater1.eat();
+eater1.put('apple');
+eater.eat();
+可以实现封装，属性私有化
+Eg Person();
+闭包的防范：
+闭包会导致多个执行函数共用一个公有变量，如果不是特殊需要，应尽量防止这种情况发生
+立即执行函数
+function test(){}函数声明
+var test=function(){}匿名函数表达式
+定义：此类函数没有声明，在一次执行过后即释放。适合做初始化工作
+形式：(function(){
+ a=133;
+}());
+document.writw(a);
+或者    
+(function(){
+ a=133;
+})();
+document.writw(a);
+* ()可换成！/-
+Eg1
+var a;
+(function(b){
+a=b+1;
+}(num));
+document.write(a);
+Eg2
+var test=function(){
+  document.write('hjgj');
+}();
+Eg3
+function retB(){
+  var arr=[];
+  for(var i=0;i<10;i++){
+    arr[i]=function(){
+      document.write(i);
+    }
+  }
+  return arr;
+}
+var testArr=retB();
+for(var i=0;i<testArr.length;i++){
+  testArr[i]();
+}
+十个十
+function retB(){
+  var arr=[];
+  for(var i=0;i<10;i++){
+    (function(n){
+  arr[n]=function(){
+    document.write(n);
+  }
+}(i));
+  }
+  return arr;
+}
+var testArr=retB();
+for(var j=0;j<testArr.length;j++){
+  testArr[j]();
+}
+0123456789
+Eg
+<ul>
+    <li>a</li>
+    <li>a</li>
+  </ul>
+使用原生js.addEventLister.给每个li元素绑定一个click事件，输出他们的顺序

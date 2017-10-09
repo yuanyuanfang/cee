@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+                          类型转换
+1.switch(score){
+  case 90:
+  document.write('90fen');
+  break;
+  case 100；document.write('100fen');
+  break;
+  default；document.write('others');
+  
+}
+break 中断 跳出循环
+3.var i=1;
+while(i){
+  i++;
+  if(i==5){
+    break;
+  }
+  document.write(i);
+}
+//1234
+4.var i=1;
+while(i){
+  i++;
+  if(i==5){
+    break;
+  }
+  document.write(i);
+}
+//不输出5的倍数
+数组
+1)var arr=[1,2,3,4,5];
+var arr1=arr;
+arr=[1,2,3,4,5,6];
+document.write(arr1);
+//12345
+
+var arr=[1,2,3,4,5];
+var arr1=arr;
+arr.push(6);
+document.write(arr1);
+//123456
+2)var arr=[1,"2",true,undefined,null,{},[1,2,3,4,5]];
+document.write(arr.length);数组长度
+arr[0]=1;
+for(var i=0;i<arr.length;i++){
+  document.write(arr[i]+",")
+}//取数
+取数组的最大值
+var arr[12,3,3,3,4,5,55,5,2,4];
+var max=arr[0];
+for(var i=0;i<arr.length;i++){
+  if(arr[i]>max){
+    max=arr[i];
+  }
+}
+document.write(max);
+对象
+var obj={
+  name:'sunny',
+  age:18,
+  teach:function(){
+    document.write('My name is'+name+'I am your teater');
+  }
+}
+document.write(obj.name);
+obj.teach();
+面向过程
+面向对象 javascript面向过程为主
+typeof六种数据类型
+number string boolean undefined object function
+undefined-undefined
+     NaN-number
+     null-object
+    数组-object
+ function-function
+类型转换
+显示类型转换
+  1))Number()
+"123"--123 number
+true--1 number
+undefined--NaN number
+代码：var demo="123";
+var output=Number(demo);
+document.write(output);
+document.write(typeof(output));
+  2))parseInt.radix(2-36)()
+转化为整型数字
+ "123.3"--123 number
+ "123abc234"--123
+ 10--16  number
+以n
+进制数转化为10进制
+代码：var demo=10;
+var output=parseInt(demo,16);
+document.write(output);
+document.write(typeof(output));
+   3))String();
+转化为string 类型
+undefined-undefined string
+代码：var num=undefined;
+var output=String(num);
+document.write(output);
+document.write(typrof(output));
+   4))parseFloat()
+       “111.2.3’’--111.2
+  5))toString(radix);
+数字类型转化为字符串类型
+undefined和null不可以toString
+以十进制为基础转化为目标进制
+代码：var num=10;
+var output=num.toString(16);
+document.write(output);
+document.write(typrof(outout));
+   6))Boolean
+0--false
+""--false
+NaN--false
+0--false
+Null--false
+undefined--false
+" "--false
+隐式类型转换
+  1))isNaN();
+NaN--true
+123--false
+"abc"--true
+代码：var num="abc";
+NaN==Number(num);
+NaN==NaN  隐藏
+document.write(isNaN(num));
+2))++  --
+"abc"--NaN
+"123"--123
+true--1
+false--0
+代码：var num="abc"
+先转化为数字
+document.write(num++);
+  3))+正   -负
+true--(-1)
+"true"--NaN
+代码：var num=true;
+document.write(-num);
+  4))+
+字符串+任何=字符串
+  5))*/mod
+1*"2"--2
+true*false--0
+true/false--Infinity
+-true/false---Infinity
+代码:var demo=1*"2";
+   document.write(demo);
+   6))&& || !
+Boolean
+   7))== !=
+   8))=== !==无类型转换
+绝对等于 决定不等于
+3)document.write(a);报错
+   document.write(typeof(a));不报错
+   document("");0
+函数 函数声明
+  1) function test(demo demo1){
+    document.write(arguments[1]);//实参123
+   }
+   test("abc",123,234);
+12{
+    arguments[0]=111;
+    document.write(demo);//111
+  }
+13{
+    arguments[0]=111;
+    demo=222;
+    document.write(arguments[0]);//222
+  }
+14判断形参实参长度
+{
+    if(test.length<arguments.length){
+      document.write('实参传多了')；
+    }
+  }
+返回值 return 强制终止函数
+function  test(demo,demo1){
+    var num=demo+demo1;
+    return num;
+  }
+  var xxx=test(1,2);
+  document.write(xxx);
+函数表达式
+var test=function(){
+    
+  }
+
+
+练习
+ 1.
+1)alter(typeof(a)); undefined
+2) alter(typeof(undefined)); undefined
+3)alter(typeof(NaN));  number
+4) alter(typeof(null)); object
+5)var a="123abc";
+  alter(typeof(+a)); number
+  alter(typeof(!!a)); boolean
+  alter(typeof(a+"")); string
+  alter(1=="1"); true
+  alter(NaN==NaN); false
+  alter(NaN==undefined) false
+  alter("11"+11); 1111
+  alter(1==="1"); false
+  alter(parseInt("1223abc")); 123
+  var num=123123.3456789; 123123.345  保留几位小数
+  alter(num.toFixed(3));
+6) var num="1"+1+(1+2)+ture;
+  document.write(num);
+  //113true true遇字符串不转换
+7)var num=-"abc"+true;
+ //NaN  NaN+任何=NaN
+8) var num=123+(-" ")+true
+ //124
+9)document.write(" ");
+//0
+10)var num=typrof(a)+1+1;
+document.write(num);
+//undefined11   *typeof(a)--undefined(string类型的)
+11)document.write(typeof(typeof(123)));
+//string
+12)
+1))var str=false+1;
+document.write(str);
+//1
+2))var demo=false==1;
+document.write(demo);
+//false
+3))if(typeof(a)&&-true+(+undefined)+"")
+  {document.write('基础扎实')；}
+//基础扎实
+ 解：typeof(a)--undefined字符串类型转化为boolean值为true
+     -true-- -1+字符串 转化为boolean值为true即打印
+4))if(11+"11"+2==33){
+  document.write('基础扎实')；
+5))!!" "+!!" "-!!false||document.write('你觉得能打印，就是猪')；
+}
+解：1+0—0=1 不走后面
+
+
+</body>
+</html>

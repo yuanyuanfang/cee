@@ -95,9 +95,9 @@ $.ajax({
 一个 Promise 对象可以理解为一次将要执行的操作（常常被用于异步操作），使用了 Promise 对象之后可以用一种链式调用的方式来组织代码，让代码更加直观。
 Promise 对象有三种状态：
 
-Fulfilled 可以理解为成功的状态
-Rejected 可以理解为失败的状态
-Pending 既不是 Fulfilld 也不是 Rejected 的状态，可以理解为 Promise 对象实例创建时候的初始状态
+	Fulfilled 可以理解为成功的状态
+	Rejected 可以理解为失败的状态
+	Pending 既不是 Fulfilld 也不是 Rejected 的状态，可以理解为 Promise 对象实例创建时候的初始状态
 helloWorld 的例子中的 then 方法就是根据 Promise 对象的状态来确定执行的操作，resolve 时执行第一个函数（onFulfilled），reject 时执行第二个函数（onRejected）。
 function printHello (ready) {
     return new Promise(function (resolve, reject) {

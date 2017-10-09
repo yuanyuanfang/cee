@@ -1,0 +1,514 @@
+				原型&&继承&&克隆
+原型
+1. 定义：原型是function对象的一个属性，它定义了构造函数制造出的对象的公共祖先。通过该构造函数产生的对象，可以继承该原型的属性方法。原型也是对象。
+2. 利用原型特点和概念，可以提取共有属性。
+3. 对象如何查看原型--隐式属性--proto--
+4. 对象如何查看对象的构造函数--constructor
+（1）01eg
+function Person(){
+this.money=200;
+}
+Person.prototype={
+	name:'sunny',
+	age:123,
+	sex:'male',
+	money:100,
+	say:function(){
+		document.write('ac');
+	}
+}
+var oPerson=new Person();
+var oPerson1=new Person();
+document.write(oPerson.name);//sunny
+document.write(oPerson1.age);//123
+document.write(oPerson.money);//200
+delete oPerson.money;
+document.write(oPerson.money);//100
+oPerson.money=300;
+document.write(oPerson.money);//300
+（2）(3)公有属性放在原型链中
+01eg
+
+Person.prototype.money=100;
+function Person(name,sex,height){
+	//var this=a{
+	//   __proto__:Person.prototype//隐式
+	//}
+	this.name=name;
+	this.sex=sex;
+	this.height=height;
+}
+var oPerson=new Person();
+document.write(oPerson.money);//100
+document.write(oPerson.__proto__.money);//100
+(4)//Person.prototype={
+//	constructor:oPerson
+//}
+
+function Person(name,sex,height){
+	this.name=name;
+	this.sex=sex;
+	this.height=height;
+}
+var oPerson=new Person();
+document.write(oPerson.constructor);
+原形链
+1. 如何构成原形链
+2. 原型链上属性的增删改查
+3. 绝大多数对象的最终都会继承自
+Object.prototype
+1. Object。Create（原型）
+（1）
+GrandFoo.prototype.firstName="Ji";
+function GrandFoo(){
+	this.name="abc";
+	this.sex="male";
+}
+var grandfoo=new GrandFoo();
+Foo.prototype=grandfoo;
+function Foo(){
+	this.name="cheng";
+	this.sex="male";
+	this.money=100;
+}
+var foo=new Foo();
+Son.prototype=foo;
+function Son(){
+	this.name="xiaocheng";
+	this.sex="female";
+
+}
+var son=new Son();
+document.write(son.name);///xiaocheng
+document.write(son.money);//100
+document.write(son.firstName);//ji
+document.write(GrandFoo.prototype.__proto__);//[object Object]
+document.write(GrandFoo.prototype.__proto__.__proto__);//null
+（3）
+var obj={};&&
+var obj1=new Object();的原型为
+Object.prototype.toString=function(){}
+function Person(){}的原型为
+Person.prototype={}的原型为
+Object.prototype
+
+（4）
+var obj={};/var obj2=new Object();
+var obj1=Object.creat(Object.prototype);
+构造出和obj一样的对象
+01eg
+var obj1=Object.create({name:'sunny'});
+document.write(obj1.name);//sunny
+02
+var obj1=Object.create(null);
+document.write(obj1);//出错
+
+document.write("abc");
+<==>document.write("abc".toString());
+document.write({}.toString());
+Object.prototype={
+	toString:function(){}
+}//toString保存在原型中
+*不是所有对象都有原型
+document.write(undefined。toString());//出错undefined和null无原型，默认输出
+（2）
+Person.prototype.name='abc';
+Person.prototype.arr=[1,2,4];
+function Person(){
+}
+var oPerson=new Person();
+oPerson.name='bbb';// 添加属性
+var oPerson1=new Person();
+document.write(oPerson.name);
+document.write(oPerson1.name);
+oPerson.arr.push(5);//更改属性
+document.write(oPerson.arr);//1245改变了原型
+Person.prototype.name='abc';
+Person.prototype.arr=[1,2,4];
+function Person(){
+	this.name='sunny';
+}
+var oPerson=new Person();
+delete oPerson.name;
+document.write(oPerson.name);//abc
+delete oPerson.name;
+document.write(oPerson.name);//abc不能删掉原型属性
+eg
+Person.prototype={
+	name:'sunny',
+	sayName:function(){
+	document.write(this.name);
+}
+}
+function Person(){
+this.name='abc';
+}
+var oPerson=new Person();
+oPerson.sayName();
+eg
+//Person.prototype={};空对象无constructor，去祖先找-->object.prototype上有constructor指向object
+Person.prototype={
+	constructor:Person
+};//自己定义
+function Person(){}
+var oPerson=new Person();
+document.write(oPerson.constructor);//Person
+Call /apply
+1. 作用，改变this指向
+2. 区别，后面传的参数形式不同
+（1）this
+function Person(name,age){
+ 	this.name='sunny';
+ }
+ var obj={};
+ Person.call(obj,'abc',18);//函数执行
+ document.write(obj.name);//改变this指向sunny
+Apply
+function Person(name,age){
+	this.name='sunny';
+}
+var obj={};
+Person.apply(obj,['abc',123,244]);
+document.write(obj.name);//sunny
+*笔试原题
+简述call和apply方法的用途和区别
+用途：改变this指向
+区别：call一个一个传，apply传数组
+继承发展史
+1. 传统形式：过多的继承了没用的属性
+2. 借用构造函数：不能继承借用构造函数的原型&&每次构造函数都要多走一个函数
+3. 共享原型：不能随便改动自己的原型
+4. 圣杯模式
+（2）借用构造函数继承
+Foo.prototype.abc='123';//访问不到
+function Foo(name,age){
+	this.name=name;
+	this.age=age;
+	this.money=100;
+}
+function Son(name,age){
+	//var this={}
+	Foo.call(this,name,age);
+	//return this；
+}
+var son=new Son('sunny',123);
+document.write(son.money);//100
+//相当于将Foo中你内容复制过来
+(3)
+p.prototype
+            F.prototype=p.prototype
+               c.prototype=new F();
+     p            c
+圣杯模式
+function inherit(C,P){
+function F(){}
+F.prototype=P.prototype;
+C.prototype=new F();
+C.prototype.constructor=C;
+C.prototype.uber=P.prototype;
+}
+function Child(){}
+function Parent(){}
+Parent.prototype.name='sunny';
+inherit(Child,Parent);
+document.write(new Child().name);//sunny
+document.write(new Child().constructor);//child
+<==>
+*var inherit=(function(){
+	var F=function(){};
+	return function(C,P){
+     F.prototype=P.prototype;
+     C.prototype=new F();
+	 C.prototype.constructor=C;
+	 C.prototype.uber=P;
+	}
+
+}());
+function Child(){}
+function Parent(){}
+Parent.prototype.name='sunny';
+inherit(Child,Parent);
+document.write(new Child().name);//sunny
+document.write(new Child().constructor);//child
+//F充当功能没具体意义 F为私有化变量 在作用链中，不在函数体中 闭包
+命名空间：管理变量，防止污染全局，适用于模块开发
+var project ={
+	department1:{
+		Person1:{
+			xxx:123,
+			yyy:234,
+			test:function(){
+				//obdy
+			}
+
+		},
+		Person2:{
+
+		}
+	},
+	department2:{},
+	department3:{},
+	department4:{}
+	
+}
+document.write(project.department1.Person1.xxx);
+var P1=project.department1.Person1;
+document.write(P1.xxx);
+如何实现链式调用（模仿jquery.js)
+var obj={
+	drink:function(){
+		document.write('Iam drinking,cool');
+		return this;
+	},
+	smoke:function(){
+		document.write('Iam smoking,zuo');
+		return this;
+	},
+	eat:function(){
+		document.write('I am eating');
+		return this;
+	},
+  doSport:function(){
+		document.write('I am running');
+		return this;
+	},
+}
+obj.drink().smoke().eat();
+查看属性
+var obj={
+	name:'sunny'
+}
+document.write(obj.name);
+document.write(obj['name']);
+//隐式obj.name-->obj['name']
+enumeration枚举遍历
+1. hasOwnproperty
+2. In
+3. instanceof
+var arr=[1,2,3];
+for(var i=0;i<arr.length;i++){
+	arr[i];
+}
+var obj={
+	name:"sunny",
+	age:19,
+	sex:'male'
+}
+document.write()
+对象枚举for in
+var obj={
+	name:"sunny",
+	age:19,
+	sex:'male'
+}
+for(var prop in obj){
+	document.write(prop+":"+obj[prop]+"<br>")
+}
+原因//隐式obj.prop-->obj['prop']
+obj[prop]     prop为字符串
+(1)hasOwnProperty   自身属性
+Person.prototype={
+	name:'sunny'
+}
+function Person(){
+	this.age=123;
+}
+var oPerson=new Person();
+for(var prop in oPerson){
+	if(oPerson.hasOwnProperty(prop)){
+		document.write(prop+":"+oPerson[prop]+"<br>");
+	}
+}
+ecmScript 3和ecmaScipt非严格模式里
+For in 循环会把原型中属性也打印出来，解决方法：hasOwnproperty
+(2)*属性用字符串形式写
+in//连带原型
+看属性在不在对象里
+Person.prototype={
+ 	name:'sunny'
+ }
+ function Person(){
+ 	this.age=123;
+ }
+ var oPerson=new Person();
+document.write('age'in oPerson);//true
+document.write('name'in oPerson);/true
+(3)instanceof
+判断前面的对象是不是后面的构造器构造出来的
+即后面构造器的原型是否在前面的原型链上
+Person.prototype={
+ 	name:'sunny'
+ }
+ function Person(){
+ 	this.age=123;
+ }
+ var oPerson=new Person();
+ document.write(oPerson instanceof Object);//true
+document.write(oPerson instanceof Person);//true
+document.write({}instanceof Object);//true
+ This
+1. 函数预编译过程this-->window
+2. 全局作用域里this-->window
+3. Call/apply可以改变函数运行时this指向
+4. Obj.func();func()里面的this指向obj
+var obj={
+	height:180,
+	eat:function(){
+		this.height++;
+	}
+}
+obj.eat();//谁调用eat this指向谁
+//隐式obj.eat();-->eat.call(obj);
+unction test(){
+	document.write(this);
+}
+test();//window
+笔试原题
+var name='222';
+var a={
+	name:"111",
+	say:function(){
+   document.write(this.name);
+	}
+}
+var fun=a.say;
+fun();//222
+a.say();//111
+var b={
+	name:"333",
+	say:function(fun){
+		fun()
+	}
+}
+b.say(a.say);//222
+b.say=a.say;
+b.say;//333
+分析
+（1）将方法拿过来，this指向全局即222
+（2）a调用say
+（3）传参为a.say将方法体传过来执行fun()自执行，没有调用与1类似
+（4）b say的方法体换成a的方法体
+arguments.callee函数自身自调用
+递归
+function mul(n){
+	if(n==0){
+		return 1;
+	}
+	return n* arguments.callee(n-1);
+	//arguments.callee=mul
+}
+02eg
+var num=(function(n){
+if(n==0){
+	return 1;
+}
+return n*arguments.callee(n-1);
+}(5));
+document.write(num);
+
+Function.caller
+function test(){
+	demo();
+
+}
+function demo(){
+	document.write(demo.caller);
+}
+test();
+
+arguments.callee和function.caller的功能
+前者指代函数体本身 后者指代当前函数运行环境的函数引用
+克隆
+浅层克隆
+function extend(parent,child){
+	var child =child||{};
+	for(var prop in parent){
+		if(parent.hasOwnProperty(prop)){
+		child[prop]=parent[prop];
+	}
+	}
+}
+var obj={
+	name:'sunny',
+	age:123,
+	money:[100,200,300,400]
+}
+var obj2={
+
+}
+extend(obj,obj2);
+obj2.name='cherry';
+document.write(obj.name);//sunny
+obj2.money.push(500);
+document.write(obj.money);//100 200 300 400 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
