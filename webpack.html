@@ -1,0 +1,17 @@
+Webpack
+一、webpack可以看作是模块打包器，把有依赖关系的各种文件打包成一系列的静态资源，它会找到javascript模块以及其他的一些浏览器不能直接运行的拓展语言，（es6 sass等），并将其打包为合适的格式以供浏览器使用。
+二、webpack的配置
+项目下建立一个webpack.config.js
+每次修改文件，运行webpack后都会生成不一样的hash和chunkhash值，方便上线的时候静态资源的版本管理。
+因为文件名每次运行时都是变化的，文件引入的文件名字也是需要变化的，这时候使用html-webpack-plugin插件 npm install html-webpack-plugin --save-dev
+title : 用来生成页面的title元素
+filename:输出的HTML文件名，默认是index.html,也可以直接配置带有子目录。
+Temple:模版文件路径，支持加载器，比如html!/index.html
+Inject:true|’head’|’body’|false,注入所有的资源到特定的template或者templateContent中，如果设置为true或者body,所有的javascript资源将被放置到body元素的底部，’head’将放置到head元素中。
+Favicon:添加特定的favion路径到输出的HTML文件中。
+Hash:true|false,如果为true,将添加一个唯一的webpack编译hash到所有包含的脚本和css文件，对于解除cache很有用。
+Cache:true|false.
+Chunks:允许只添加某些块。
+三、loader
+npm install --save-dev babel-core babel-loader babel-preset-es2015 babel-preset-react（npm一次安装多个依赖模块，模块之间用空格隔开）
+
