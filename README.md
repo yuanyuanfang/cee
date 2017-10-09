@@ -1,2 +1,2 @@
 # cee
-study
+study study study
