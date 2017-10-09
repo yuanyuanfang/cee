@@ -1,0 +1,210 @@
+解4：在原形链上编程的好处：凡是继承原型都可以使用，调用起来方便。
+<body>
+<div>
+<span>1</span>
+<p>2</p>
+</div>
+	
+<script type="text/javascript">
+  Element.prototype.retChildren=function(){
+  	var child =this.childNodes,
+  		len = child.length,
+  		obj={
+  			"length":0,
+  			"push":Array.prototype.push
+  		}
+  		for(var i=0;i<len;i++){
+  			if(child[i].nodeType==1){
+  				obj.push(child[i]);
+  			}
+
+  		}
+  		return obj;
+  }
+var div=document.getElementsByTagName('div')[0];
+</script>
+</body>
+
+div
+<div>​…​</div>​
+div.retChildren()
+Object {0: span, 1: p, length: 2}
+解5：
+<body>
+<div>
+<span>1</span>
+<p>2</p>
+</div>
+	
+<script type="text/javascript">
+  Element.prototype.hasChildren=function(){
+  	var child=this.childNodes,
+  		len = child.length;
+  		for(var i=0;i<len;i++){
+  			if(child[i].nodeType==1){
+  				return true;
+  			}
+  		}
+  		return false;
+  }
+
+var div=document.getElementsByTagName('div')[0];
+
+
+</script>
+</body>
+div
+<div>​…​</div>​
+div.hasChildren()
+True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dom基本操作&&date
+1. remove剪切 delete 删除
+2.Dom基本操作：
+Element节点的一些属性
+  innerHTML
+  innerText(火狐不兼容) / textContent(老版本IE不好使)
+Element节点的一些方法
+  ele.setAttribute()
+  ele.getAttribute();
+Eg01
+<body>
+<div>
+<span>1</span>
+<p>2</p>
+</div>	
+<script type="text/javascript">
+var div=document.getElementsByTagName('div')[0];
+</script>
+
+div.innerHTML(div中的字符串类型的节点 可读可写)
+<span>1</span>
+<p>2</p>
+
+div.innerHTML=”abc”;(abc替换div中的所有内容)
+Eg02
+<body>
+<div>
+<span>1</span>
+<p>2</p>
+</div>	
+<script type="text/javascript">
+var div=document.getElementsByTagName('div')[0];
+for(var i=0;i<3;i++){
+	div.innerHTML +=("<span>" +i +"<span>");
+}
+//div.innerHTML+="<div>123</div>";
+</script>
+</body>
+在div中加入三个span
+Eg03
+笔试题：要求"阿里巴巴" "百度" "新浪" ....50个字符串填到div里
+分析：正常思路：将字符串放到数组中，div.innerHTML +=数组每一位 由于div.innerHTML +=效率低，字符串连接效率也低（栈操作），故不采用这种方法。
+正确思路：将字符串放到数组中，
+var arr=[,,,,,];
+arr.join("");
+div.innerHTML +=(arr.join("数组每一位"))；
+Eg04：
+div.innerText="19";
+"19"(div中只有19)
+Eg04：
+div.setAttribute('id','demo');
+div.setAttribute('data-log','2');
+console.log(div.getAttribute('data-log'));
+日期：Date()
+getDate()
+从Date对象返回一个月的某一天（1--31）
+getDay()
+从Date对象返回一周的某一天（0--6）
+getMonth()
+从Date对象返回月份（0--11）
+getFullYear()
+从Date对象以四位数字返回年份
+getTime()
+返回1970年1月1日至今的毫秒数
+setYear()
+用setFullYear()方法代替
+setSeconds()
+设置Date对象中的秒钟（0--59）
+setDate()
+设置Date对象中月的某一天
+
+
+
+
+Var myDate=new date();
+myDate.getDate()
+6
+myDate.getDay()
+0
+myDate.getMonth()
+2+1=3
+myDate.getFullYear()
+2016
+myDate.getYear()
+116
+myDate.getSeconds()
+1
+new Date().getSeconds()
+46
+myDate.getTime()
+1457267941840
+
+var myDate = new Date();//记录时刻
+var num=myDate.getTime();
+var seconds=num/1000;
+var minutes=seconds/60;
+var hours=minutes/60;
+var days=hours/24;
+用getTime验证程序执行效率：
+var datePoint1 =new Date();
+for(var i=0;i<100000000;i++){
+
+}
+var datePoint2 =new Date();
+document.write(datePoint2.getTime()-datePoint1.getTime());
+
+var date=new Date();
+date.setDate(6);
+
+date.getDate()
+6
+
+date.toString()
+"Sun Mar 06 2016 21:29:01 GMT+0800 (中国标准时间)"
+date.setMonth(0);
+1452086941050
+date
+Wed Jan 06 2016 21:29:01 GMT+0800 (中国标准时间)
+设定具体时间所需：date.setDate();
+date.setMonth();
+date.setFullYear();
+date.setHours();
+date.setMinutes();
+date.setSeconds();
+date.setMilliseconds();
+Eg：封装函数，打印当前是何年何月何日何时，几分几秒：
+function retTime(){
+	var date =new Date();
+	document.write(date.getFullYear()+"年"+(date.getMonth()+1)+"月"+date.getDate()"+”日”，星期"+date.getDay()+"。"+date.getHours()+"时"+date.getMinutes()+"分"+date.getSeconds()+"秒");
+}
+retTime()
+Undefined
+2016年3月6日，星期0。21时52分58秒
+

@@ -1,0 +1,258 @@
+                         兼容封装
+    1.封装函数insertAfter()；功能类似insertBefore();
+    提示:可忽略老版本浏览器，直接在Element.prototype上编程
+    2.封装remove(); 使得child.remove()直接可以销毁自身
+    3.将目标节点内部的节点顺序逆序。
+    eg:<div> <a></a> <em></em></div> 
+<div><em></em><a></a></div>
+  解1：<body>
+	<div>
+		<p>1</p>
+		<strong>2</strong>
+	</div>
+
+<script type="text/javascript">
+Element.prototype.inserAfter= function(targetNode,afterNode){
+	var nextSib=afterNode.nextElementSibling;
+	if(this.children.length<=1||!nextSib){
+		this.appendChild(targetNode);
+	}else{
+		this.inserBefore(targetNode,nextSib);
+	}
+}
+var div=document.getElementsByTagName('div')[0];
+var strong=document.getElementsByTagName('strong')[0];
+var p=document.getElementsByTagName('p')[0];
+var span=document.createElement('span');
+
+
+</script>
+</body>
+div.inserAfter(span,strong)
+Undefined
+解2：<body>
+	<div>
+		<p>1</p>
+		<strong>2</strong>
+	</div>
+
+<script type="text/javascript">
+
+var div=document.getElementsByTagName('div')[0];
+//var strong=document.getElementsByTagName('strong')[0];
+var p=document.getElementsByTagName('p')[0];
+var span=document.createElement('span');
+Element.prototype.remove=function(){
+	var definedParent=this.parentNode;
+	definedParent.removeChild(this);
+}
+
+</script>
+</body>
+p.remove()
+Undefined
+解3：
+1. window.onload=function(){}等整个文档都加载完才执行，document.write()把前面的内容擦除。
+3.setInterval();
+ setTimeout();
+ clearInterval();
+ clearTimeout();
+ 全局对象window上的方法，内部函数this指向window
+01eg
+<script type="text/javascript">
+
+var i=0;
+window.setInterval(function(){
+	 i++;
+	 console.log(i);
+},1000)
+</script>
+1.2.3.4.5.6.7.8.9
+02eg
+<script type="text/javascript">
+var obj={
+	xxx:function(){
+		setInterval(function(){
+			console.log(this);
+		},1000);
+	}
+}
+</script>
+Window
+03eg  js执行队列 每隔一段时间就会放入执行队列中执行片段，但执行不一定间隔时间相同
+04eg var timer=window.setInterval(function(){
+	console.log(new Date().getTime());
+},1000);
+window.clearInterval(timer);
+05eg：<script type="text/javascript">
+var i=0;
+var timer=window.setInterval(function(){
+	i++;
+	console.log(i);
+	if(i==10){
+		clearInterval(timer);
+	}
+},1000);
+</script>
+1 2 3 4 5 6 7 8 9 10
+06eg：timer1--1 timer2--2
+07eg:延迟执行，只执行一次setTimeout(function(){},1000);
+   执行一次之前就不想执行clearTimeout()
+setTimeout(function(){
+	console.log('hello world');
+},1000);
+08eg:字符串也可以执行
+var i=0;
+setInterval("i++;console.log(i)",1000);
+
+var i=0;
+setInterval(test,1000);
+function test(){
+i++;
+console.log(i)
+}
+09eg：计时器，到一分钟停止
+<style type="text/css">
+	input{
+		width: 50px;
+		height: 20px;
+	}
+	</style>
+	
+</head>
+<body>
+	<input type="text" value="0">分
+	<input type="text" value="0">秒
+
+<script type="text/javascript">
+var minute=document.getElementsByTagName('input')[0],
+    second=document.getElementsByTagName('input')[1],
+    minuteCount=0,
+    secondCount=0,
+    timer;
+    timer=window.setInterval(function(){
+    	secondCount++;
+    	if(secondCount==60){
+    		secondCount=0;
+    		minuteCount++;
+    		minute.value=minuteCount;
+
+    	}
+    	if(secondCount==0&&minuteCount==3){
+    		clearInterval(timer);}
+    	second.value=secondCount;
+    },100);
+
+</script>
+</body>
+10eg：安装插件：ement插件，先要找到package control安装在安装完后 preferences-->package control ,输入install package 回车 联网启动 ement 回车
+或者代码复制 ，ctrl `粘贴
+4. 查看滚动条的滚动距离
+   window.pageXOffset/pageYOffset  IE8及IE8以下不兼容
+ Document.body/documentElementscrollLeft/scrollTop
+   兼容性比较混乱，用时两个数相加，因为不可能存在两个同时有值
+封装兼容方法，求滚动论滚动距离getScrollOffset()
+01eg:window.pageYOffset  
+     158.3
+02eg:document.body.scrollTop
+document.body.scrollLeft
+document.documentElement.scrollTop
+document.documentElement.scrollLeft
+Var top=document.body.scrollTop+document.documentElement.scrollTop;
+03eg
+封装兼容方法，求滚动论滚动距离getScrollOffset()
+function getScrollOffset(){
+	if(window.pageXOffset){
+		return {
+			w:window.pageXOffset,
+			h:window.pageYOffset
+		}
+	}
+	var dis={
+		w:document.body.scrollLeft+document.documentElement.scrollLeft,
+		h:document.body.scrollTop+document.documentElement.scrollTop	}
+return dis；
+}
+
+getScrollOffset()
+39
+4. #查看视口的尺寸
+   window.innerWidth
+   window.innerHeigth
+   IE8及以下不兼容
+#标准模式下
+   document.documentElement.clientWidth
+   document.docuemntElement.clientHeight浏览器可视窗口的高度和宽度，无兼容问题
+#怪异模式下
+document.body.clientWidth
+document.body.clientHeight
+<!DOCTYPE　html>为标准模式
+标准模式下  document.compatMode-->”CSS1Compat”
+怪异模式下  document.compatMode-->“BackCompat”
+#封装兼容方法，返回浏览器视口尺寸
+function getViewportOffset(){
+	if(window.innerWidth){
+		return{
+			w:window.innerWidth,
+			h:window.innerHeight
+		}
+	}
+	if(document.compatMode=="CSS1Compat"){
+		return{
+			w:document.documentElement.clientWidth,
+			h:document.documentElement.clientHeigth
+		}
+	}
+}
+6#查看元素的几何尺寸
+getBoundingClientRect()
+#兼容性很好
+#该方法返回一个对象，对象里面有left top right bottom
+#height和width属性老版本并未实现
+#返回结果并不是实时的
+#圆角：border-radius:50%
+#封装元素宽和高
+Element.prototype.getElementOffset=function(){
+		var objData=this.getBoundingClientRect();
+		if(objData.width){
+			return{
+				w:objData.width,
+				h:objData.height
+			}
+		}else{
+			return{
+				w:objData.right-objData.left,
+				h:objData.bottom-objData.top
+			}
+		}
+}
+
+7. #让滚动条滚动
+   #window上有三个方法
+   #scroll(),scrollTo(),scrollBy()
+   #三个方法功能类似，用法都是将x,y传入，已实现让滚动轮滚动到当前位置
+   #区别：scrollBy会在之前的数据基础上做累加
+   #eg:利用scrollBy实现快速阅读的功能
+01eg scroll(0.100);
+7. #查看元素尺寸
+  dom.offsetWidth盒子宽    dom.offsetHeight盒子高
+#查看元素位置
+  dom.offsetLeft  dom.offsetTop
+ 对于无定位的父级的元素，返回相对的文档坐标，对于有定位的父级的元素，返回最近的相对于有定位的父级的坐标
+#dom.offsetParent找到相应的有定位的父级
+#封装函数：元素相对于文档坐标getElementosition
+
+Element.prototype.getElementPosition=function(){
+  var x=0,
+      y=0,
+      ele=this;
+  while(ele!=document.body){
+      x+=ele.offsetLeft;
+      y+=ele.offsetTop;
+      ele=ele.offsetparent;
+  }
+  return {
+    disX:x,
+    disX:y
+  }
+}
