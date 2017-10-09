@@ -1,0 +1,239 @@
+                               闭包&&类数组&&dom
+1.闭包私有化
+外部访问：function Person(){
+	this.name='abc';
+	
+}
+var oPerson=new Person();
+document.write(oPerson.name);
+内部访问：function Person(){
+	this.name='abc';
+	this.say=function(){
+		document.write(this.name);
+	}
+	
+}
+var oPerson=new Person();
+oPerson.say();
+私有化：内部可以访问，外部调用不了
+
+function Person(){
+	var name='sunny';
+	return{
+		say:function(){
+			document.write(name);
+		}
+	}
+}
+ var oPerson=new Person();
+ oPerson.say();
+ document.write(0Person.name);
+//sunny undefined
+2. 类数组
+本身是对象，能体现一部分数组的特性
+1. 可以利用属性名模拟数组的特性
+2. 可以动态的增长length属性
+3. 可以强行让类数组调用push方法，则会根据length属性值的位置进行length属性扩充。
+var arr=[1,2,3,4];
+var  obj={};
+var arrObj={
+	"0":123,
+	"1":111,
+	"length":2,
+	"push":Array.prototype.push
+}
+arrObj.push("222");
+document.write(arrObj[0]);//123
+<==>Array.prototype.push.call(arrObj,”222”);
+document.write(arrObj.length);//3
+
+隐式
+Array.prototype.push=function(){
+	this[length]=arguments[0];
+	this.length++;
+}
+
+Eg
+var obj={
+	"1":'a',
+	"2":'b',
+	"length":2,
+	"push":Array.prototype.push
+}
+
+obj.push('c');
+obj.push('d');
+document.write(obj[0]);
+obj[0] undefined     obj[1] a     obj[2] c     obj[3] d
+Eg
+var obj={
+	'name':'sunny',
+	'age':123,
+	"2":'a',
+	"3":'b',
+	"length":2,
+	"push":Array.prototype.push
+}
+
+obj.push('c');
+obj.push('d');
+document.write(obj[3]);
+// obj[0] undefined     obj[1] undefined     obj[2] c     obj[3] d
+3. 三目运算符
+形式：判断语句？若为真，执行，并返回结果：若为假，，执行，并返回结果。
+三目运算符就是简化版的if else语句
+3. try catch
+ 为了不影响下面程序执行
+try{
+	//错误的代码A
+}catch(e){//e代表错误对象
+    //代码B
+    e.name;
+    e.message;
+}
+//正确的代码C
+解释：当A有错误，去执行B和C，当 A没有错，不执行B
+
+try{}catch(e) {}finally{}
+Error.name的六种值对应的信息：
+1. EvalError：eval()的使用与定义不一致 
+2. RangeError：数值越界 
+3. ReferenceError：非法或不能识别的引用数值 
+4. SyntaxError：发生语法解析错误 
+5. TypeError：操作数类型错误 
+6. URIError：URI处理函数使用不当
+
+5.es5的严格模式 不兼容3的一些标准
+"use strict";//全局严格模式
+function test(){
+	"use strict";//局部严格模式
+}
+6. with改变作用域链
+
+//with(with作用域链的最顶端)
+Eg1
+var name='sunny';
+var obj={
+	name:'cherry'
+}
+with(obj){
+	document.write(name);//cherry
+}
+Eg2
+var name='sunny';
+var obj={
+	name:'cherry'
+}
+with(document){
+	write(name);//sunny
+}
+Es5严格模式下，
+(1)with禁用
+(2)不可以使用arguments.callee
+(3)变量赋值前必须声明
+(4)局部this必须被赋值
+(5)不允许重复属性和型参数名
+Eg1
+function test(){
+	document.write(this);//object window
+}
+test.call(null);
+Eg2
+"use strict";
+function test(){
+	document.write(this);//null
+}
+test.call(null);
+undefined亦如此
+6. DOM
+DOM-->document object model
+DOM定义了表示和修改所需的对象，这些对象的行为和属性以及这些对象之间的关系。DOM对象即为宿主对象，由浏览器厂商定义，用来操作html css功能的一类对象的集合，也有人称DOM是对html以及xml的标准编程接口。
+<html>
+<head lang="en,zh-cnm">
+	<title>pratice</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+	.wrapper{
+
+	}
+	button{
+		background-color:#ffc; 
+	}
+	.wrapper div{
+		border:2px solid red;
+		height: 100px;
+		width: 100px;
+		display: none;
+	}
+	.active{
+		background-color: orange;
+	}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<button class="active">111</button>
+		<button>222</button>
+		<button>333</button>
+		<div style="display:block">111</div>
+		<div>222</div>
+		<div>333</div>
+	</div>
+	<script type="text/javascript" >
+		var gBtn=document.getElementsByTagName('button'),
+		oWrapper=document.getElementsByClassName('wrapper')[0],
+		oEle=oWrapper.getElementsByTagName('div');
+		for(var i=0;i<gBtn.length;i++){
+			(function(i){
+				gBtn[i].onclick=function(){
+					for(var j=0;j<gBtn.length;j++){
+						gBtn[j].className='';
+						oEle[j].style.display='none';
+					}
+					oEle[i].style.display='block';
+					this.className='active';
+				}
+			}(i))
+		}
+	</script>
+</body>
+</html>
+上为按钮代码
+Eg1
+<div id="only" class="demo">123</div>
+	<div id="only1" class="demo">123</div>
+	<script type="text/javascript" >
+		var oEle=document.getElementById("only");//123
+		var oEle=document.getElementsByTagName('div')[0];//123
+
+var oEle=document.getElementsByClassName('demo')[0];//IE8及以下浏览器不能用
+		适用于所有浏览器思路：
+		document.getElementsByTagName('*');
+		.className=='';
+Eg2
+			var oEle=document.querySelector('.demo');//css选择器 只选第一个
+			oEle.style.background='red';
+			var oEle=document.querySelectorAll('.demo');//css选择器 全部选择
+
+不常用原因：1 ie7及ie7以下浏览器不能用
+			2 他们选出来的元素集合不是实时的
+Eg3
+<div class="content">123</div>
+	<div class="content">123</div>
+	<div class="content">123</div>
+	<script type="text/javascript" >
+	var oEle=document.getElementsByClassName('content');
+	console.log(oEle.length);//3
+	var oDiv=document.createElement('div');
+	oDiv.className='content';//添加
+	oDiv.innerText=4;
+	document.body.appendChild(oDiv);
+	console.log(oEle.length);//4实时改变
+#
+创建document.createElement('div');
+更改元素class oDiv.className='';
+更改文本内容  oDiv.innerText=123;
+更改 html结构 oDiv.innerHTML='<div>';
+添加节点      .appendChild();
+
+
