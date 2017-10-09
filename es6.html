@@ -45,31 +45,83 @@ es6
 	5.数组实例的includes()方法
 	这个方法可以判断数组是否包含给定的值，有则返回true，否则返回false。
 	～函数的扩展
-1.rest参数
-es6中引入了rest参数，形式为“…变量名”，用于获取函数的多余参数，这样就不需要使用arguments对象了。	 
-	function add(...values) {
-	  let sum = 0;
-	  for (var val of values) {
-	    sum += val;
-	  }
-	  return sum;
-	}
-	add(2, 5, 3) // 10
-2.扩展运算符
-	   合并数组	   
-	// ES5
-	[1, 2].concat(more)
-	// ES6
-	[1, 2, ...more]
-扩展运算符还可以将字符串转为真正的数组。
-[...'hello']
-// [ "h", "e", "l", "l", "o" ]
-～箭头函数
+		1.rest参数
+		es6中引入了rest参数，形式为“…变量名”，用于获取函数的多余参数，这样就不需要使用arguments对象了。	 
+			function add(...values) {
+			  let sum = 0;
+			  for (var val of values) {
+			    sum += val;
+			  }
+			  return sum;
+			}
+			add(2, 5, 3) // 10
+		2.扩展运算符
+			   合并数组	   
+			// ES5
+			[1, 2].concat(more)
+			// ES6
+			[1, 2, ...more]
+		扩展运算符还可以将字符串转为真正的数组。
+		[...'hello']
+		// [ "h", "e", "l", "l", "o" ]
+		～箭头函数
 使用箭头函数有几个需要注意的地方：
 ①.函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象，这个是和es5很不一样的地方。
 ②.不可以当做构造函数，也就是说，不能够使用new 命令，否则会报错。
 ③.不可以使用arguments对象，该对象在函数体内不存在。如果需要，可以使用rest参数来代替。
 上面四点中，第一点尤其需要注意：es5中是谁调用函数，函数内部的this就指向谁，es6的箭头函数是函数在哪里声明，函数里的this就指向哪里。
+～promise
+日常开发常常会遇到的需求：在多个接口异步请求数据，然后利用这些数据来进行一系列的操作。一般会这样去写：
+$.ajax({
+    url: '......',
+    success: function (data) {
+        $.ajax({
+            // 要在第一个请求成功后才可以执行下一步
+            url: '......',
+            success: function (data) {
+                 // ......
+            }
+        });
+    }
+});
+这样的写法的原理是，当执行一些异步操作时，我们需要知道操作是否已经完成，所有当执行完成的时候会返回一个回调函数，表示操作已经完成。
 
+使用回调函数的形式理解起来并不困难，但是实际的应用当中会有以下的缺点：
+
+	在需要多个操作的时候，会导致多个回调函数嵌套，导致代码不够直观，就是常说的 Callback Hell。
+	如果几个异步操作之间并没有前后顺序之分（例如不需要前一个请求的结果作为后一个请求的参数）时，同样需要等待上一个操作完成再实行下一个操作。
+	为了解决上述的问题，Promise 对象应运而生，在 EMCAScript 2015 当中已经成为标准。
+
+一个 Promise 对象可以理解为一次将要执行的操作（常常被用于异步操作），使用了 Promise 对象之后可以用一种链式调用的方式来组织代码，让代码更加直观。
+Promise 对象有三种状态：
+
+Fulfilled 可以理解为成功的状态
+Rejected 可以理解为失败的状态
+Pending 既不是 Fulfilld 也不是 Rejected 的状态，可以理解为 Promise 对象实例创建时候的初始状态
+helloWorld 的例子中的 then 方法就是根据 Promise 对象的状态来确定执行的操作，resolve 时执行第一个函数（onFulfilled），reject 时执行第二个函数（onRejected）。
+function printHello (ready) {
+    return new Promise(function (resolve, reject) {
+        if (ready) {
+            resolve("Hello");
+        } else {
+            reject("Good bye!");
+        }
+    });
+}
+
+function printWorld () {
+    alert("World");
+}
+
+function printExclamation () {
+    alert("!");
+}
+
+printHello(true)
+    .then(function(message){
+        alert(message);
+    })
+    .then(printWorld)
+    .then(printExclamation);
 </body>
 </html>
