@@ -1,3 +1,2 @@
 # cee
-study
-11111
+study code
