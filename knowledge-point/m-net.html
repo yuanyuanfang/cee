@@ -1,0 +1,112 @@
+
+三种定义标准模式的方法
+1.待穿插知识点
+·<label> for 属性-->js中表示htmlFor
+·属性映射HTML属性 映射到Element属性
+·img图片预加载
+·byClassNamc自己定义的写法还没写呢
+·Math.random()和彩票程序0-36的随机数
+·文档碎片
+·cdn()
+·断点调试
+01eg：label用来绑定
+ <label for="demo">username</label>
+  <input id="demo" type="text" style="border:1px solid black;">
+<script>
+var input=document.getElementsByTagName('input')[0];
+input.onclick = function(){
+  console.log('a');
+}  
+
+label.htmlFor
+Demo
+02eg：div.className="demo1";
+div.setattribute('abc',799);
+03eg:图片预加载
+var count=0,
+img=document.creatElement('img');
+img.src="http://,,,,.jpg";
+var timer = setInterval(function(){
+  count++;
+  if(count==5){
+    document.body.appendChild(img);
+  }else if(count==6){
+    clearInterval(timer);
+  }
+},500);
+04eg：封装classname
+<body>
+  <div class=" demo  "> </div>
+  <div class=" demo"> </div>
+  <div class="demo"> </div>
+
+<script>
+Document.prototype.getClassName = function(className){
+      var allEle = document.getElementsByTagName('*'),
+      length=allEle.length,
+      retArr = [],
+      reg=/^\s+|\s+$/g;
+      for(var i = 0 ;i < length ;i++){
+        if(allEle[i].className.replace(reg,"")== className){
+          retArr.push(allEle[i]);
+        }
+      }
+      return retArr;
+}
+
+document.getClassName('demo');
+[<div class=​" demo  ">​ ​</div>​, <div class=​" demo">​ ​</div>​, <div class=​"demo">​ ​</div>​]
+05eg：Math.random()
+06eg:文档碎片 nodetype 11 documentFragment()
+
+var dfg = document.createDocumentFragment();
+var div = document.createElement('div');
+var span = document.createElement('span');
+dfg.appendChild(div);
+dfg.appendChild(span);
+document.body.appendChild(dfg);
+将带插入文档的元素全部放到dfg中，再一次性插入到文档中
+07eg：cdn基站 就近请求 08eg：断点调试sourse
+
+
+                
+
+                HTTP协议笔记
+1,为什莫诞生
+为了知识共享性诞生
+借助多文档相互关联形成的超文本，连接可相互阅读
+www（万维网，word wide web）
+1.HTML
+2.HTTP
+3.URL
+TCP/IP
+2,93.NCSA 浏览器鼻
+3，HTTP协议是TCP/IP协议族中的子集。
+应用层，传输层，网略层，数据链路层
+应用层：向用户提供服务时的活动
+传输层：对应上层应用层，提供处于网络连接中的两台计算机之间的数据传输。
+网络层：用来处理网络上流动的数据包（数据包是最小的网络传输单位）
+链路层：用来处理连接网络的硬件部分
+         客户端             服务器端
+应用层   HTTP                HTTP
+传输层   TCP                 TCP
+网络层   IP                  IP
+链路层   网络                网络
+
+
+通讯流传输
+IP协议：（负责传输）
+位于网络层的，IP和IP地址。
+IP地址：知名节点被分配的地址
+TCP协议：确保可靠性（三次握手）
+三次交互：
+1.先发送一个带有SYN标志的数据包给对方。
+2.接收端收到后，会回传一个带有SYN/ACK标志的数据包，来表示传达确认信息。
+3.最后是发送端再回传一个带有ACK标志的数据包，代表握手结束.
+DNS：负责域名解析的服务，和HTTP相同，是位于应用层的协议，提供域名到IP地址的解析服务
+
+      发送请求
+客户端------>DNS
+       IP
+通过IP地址访问百度的web服务器
+

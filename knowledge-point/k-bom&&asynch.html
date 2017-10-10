@@ -1,0 +1,153 @@
+                       bom&&asynch
+1. ·json
+·json是一种传输数据的格式（以对象为样板，本质上就是对象，但用途有区别，对象都是本地用的，json是用来传输的）
+·JSON.parse() ;string  -->  json
+·JSON.stringify(); json -->string
+01eg:传输数据有两种格式：xml json
+Xml可以自定义标签，用来规格化数据
+json是对象 
+ var json={
+  "name":"ab";
+ }
+02eg：JSON.stringify(); 把json转化为字符串形式的json
+JSON.stringify(json)
+var json={
+  "name":"sunny",
+  "age":18
+ }
+"{"name":"sunny","age":18}" 
+03eg：JSON.parse() ;把字符串形式的json转换为json
+ var str='{"name":"sunny","age":18 }';
+JSON.parse(str)
+Object {name: "sunny", age: 18}
+1. 异步加载js
+·js加载的特点：加载工具方法没必要阻塞文档，过得js加载会影响页面效率，一旦网速不好，那么整个网站将等待js加载而不进行后续渲染等工作。
+·有些工具方法需要按需加载，用到再加载，不用不加载。
+01eg：原本js要加载完才能执行后续代码
+三个树:DOMTree CssTree
+       renderTree
+Dom树和Css树为深度优先 render树有两个规则：repaint重绘  reflow重构 重排 回流
+重绘：改变内部形态后无需重新渲染（颜色）
+重构：改变（宽高）尽量避免
+02eg：在形成dom树和css树的过程中 加载js时，js会阻断dom树和css树，然而有些js不是操作dom，是充当工具的，这时异步加载。
+1. javascript异步加载的三种方案
+   ·1defer异步加载，但要等到dom文档全部解析完才会被执行。只有IE能用，也可以将代码写到内部。
+   ·2async异步加载，加载完就执行，async只能加载外部脚本，不能把js写在script标签里。
+   ·1.2执行时也不阻塞页面
+   ·3创建script，插入到DOM中，加载完毕后callBack，
+01eg：defer推迟：要等到dom元素全部解析完它才异步执行
+先加载dom树，再加载css树，再渲染，形成render树，渲染和内容加载无关。Dom树形成即解析完毕，加载完毕即全部下载完，即dom解析完毕和图片加载无任何关系，dom树解析完毕，defer就会异步执行。
+  <script type="text/javascript" src="tools2.js" defer="defer" >
+Console.log(‘a’);
+</script>
+02eg:e6有块级元素，可以解闭包
+03eg：document.write();<-->document.body.innerHTML=””,即异步加载js不允许使用document.write,它清除文档流，把自己也清除，document.write可以帮助初始化页面
+04eg：async：h5标准 只能用于支持h5的浏览器，IE6和IE8不兼容，异步加载完就异步执行，只能加载外部js，即<script type="text/javascript" src="tools2.js" asyns="asyns" ></script>
+05eg*  asynchronouse 异步的(ajax) asynchronous javascript and XML
+06eg所有浏览器都异步加载：
+   第一种方法：<script type="text/javascript" src="tools2.js" asyns="asyns" ></script>
+               <script type="text/javascript" src="tools2.js" defer="defer"></script>
+   使用第二种方法：<script type="text/javascript">
+第三种 动态加载function asyncLoaded(url,callback){
+  var script=document.createElement('script');
+script.type="text/javascript";
+if(script.readyState){
+  //IE
+  script.onreadystatechange=function(){
+    if(script.readyState=="loaded"||script.readyState=="complete"){
+      script.onreadystatechange=null;
+      callback();
+      //handle
+    }
+  }
+  }else{
+    //safari chrome opera firefox
+    script.onload=function(e){
+      callback();
+    //handle
+}//监听下没下载完
+}
+script.src=url;//异步的
+document.body.appendChild(script);
+
+}
+asyncLoaded('tools2.js',function(){
+  console.log(getScrollOffset());
+});
+
+</script>
+1. ·1创建Document对象，开始解析web页面。解析HTML元素和他们的文本内容后添加Element对象和Text节点到文档中。这个阶段document.readyState=’loading’。
+·2遇到link外部css，创建线程加载，并继续解析文档。
+·3遇到script外部js，并且没有设置async，defer，浏览器加载，并阻塞，等待js加载完成并执行该脚本，然后继续解析文档。
+·4遇到script外部js，并且设置有async，defer，浏览器创建线程加载，并继续解析文档。
+·5遇到img等，先正常解析dom结构，然后浏览器异步加载src，并继续解析文档。
+·6当文档解析完成，document.readyState=’interactive’.
+·7文档解析完成后，所有设置有defer的脚本会按照顺序执行。（注意与async的不同，但同样禁止使用document.write()）;
+·8document对象触发DOMContentLoaded事件，这也标志着程序执行从同步脚本执行阶段，转化为事件驱动阶段。
+·9当所有async的脚本加载完成并执行后，img等加载完成后，document.readyState=’complete’,window对象触发load事件
+·10从此，以异步响应方式处理用户输入，网络事件等。
+01eg：js时间线 performance timing line
+Js:先创建document对象 ，然后开始解析web页面
+02eg：document.onreadystatechange=function(){
+  console.log(document.readyState);
+}
+interactive
+Complete
+解析之后才执行
+
+console.log(document.readyState);
+Loading
+interactive
+Complete
+03eg DOMContentLoaded 只能用addEventListener绑定
+1. BOM
+·定义：Browser Object Model,定义了操作浏览器的接口
+·BOM对象：window，History,Navigator,Screen,Location等
+·由于浏览器厂商的不同，Bom对象的兼容性极低。一般情况下，我只用其中的部分功能。
+http://www.w3school.com.cn/jsref/index.asp
+01eg:window
+confirm()	显示带有一段消息以及确认按钮和取消按钮的对话框。
+var str=window.confirm('a');
+close()	关闭浏览器窗口。
+window.close()
+URL	一个可选的字符串，声明了要在新窗口中显示的文档的 URL。如果省略了这个参数，或者它的值是空字符串，那么新窗口就不会显示任何文档。
+name	一个可选的字符串，该字符串是一个由逗号分隔的特征列表，其中包括数字、字母和下划线，该字符声明了新窗口的名称。这个名称可以用作标记 <a> 和 <form> 的属性 target 的值。如果该参数指定了一个已经存在的窗口，那么 open() 方法就不再创建一个新窗口，而只是返回对指定窗口的引用。在这种情况下，features 将被忽略。
+window.open(‘http://www.baidu.com’,’baidu’)
+Undefined
+02eg:navigator
+appName 属性可返回浏览器的名称。
+appName 属性是一个只读到字符串，声明了浏览器的名称。在基于 Netscape 的浏览器中，这个属性的值是 "Netscape"。在 IE 中，这个属性的值是 "Microsoft Internet Explorer"。其他浏览器可以正确地表示自己或者伪装成其他的浏览器以达到兼容性。
+Navigator.online
+True//有网
+userAgent	返回由客户机发送服务器的 user-agent 头部的值。
+用来判断机型，pc端还是移动端
+03eg：screen
+availHeight	返回显示屏幕的高度 (除 Windows 任务栏之外)。
+availWidth	返回显示屏幕的宽度 (除 Windows 任务栏之外)。
+deviceXDPI	返回显示屏幕的每英寸水平点数。
+deviceYDPI	返回显示屏幕的每英寸垂直点数。
+04eg：history
+History 对象属性
+属性	描述
+length	返回浏览器历史列表中的 URL 数量。
+History 对象方法
+方法	描述
+back()	加载 history 列表中的前一个 URL。
+forward()	加载 history 列表中的下一个 URL。
+go()	加载 history 列表中的某个具体页面。
+go 填参数，可填正负
+
+05eg：location
+hash	设置或返回从井号 (#) 开始的 URL（锚）。
+host	设置或返回主机名和当前 URL 的端口号。
+hostname	设置或返回当前 URL 的主机名。
+href	设置或返回完整的 URL。
+pathname	设置或返回当前 URL 的路径部分。
+port	设置或返回当前 URL 的端口号。
+protocol	设置或返回当前 URL 的协议。
+search	设置或返回从问号 (?) 开始的 URL（查询部分）。
+location.hash(‘demo’)    id名 即可找到 相当于锚点
+Css3：#only：target{
+Background-color:green;}
+06eg:端口号：区分功能
+http://www.baidu.com域名

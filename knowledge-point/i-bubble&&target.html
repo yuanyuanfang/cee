@@ -1,0 +1,427 @@
+                   冒泡&&委托
+1. 脚本化样式表
+ #查找操作样式表 
+      #doocument.style.Sheets
+      #该属性存储了一个html文档里面的所有css样式表的集合。
+1. 事件
+   #何为事件
+   #交互体验的核心功能
+   #演示 拖拽 点击
+01eg：	<style type="text/css">
+ .demo{
+ 	height: 100px;
+ 	width: 100px;
+ 	background-color: red;
+ }
+
+	</style>
+</head>
+<body>
+
+<div class="demo"></div>
+<script type="text/javascript">
+var div=document.getElementsByClassName('demo')[0];
+var count=0;
+div.onclick=function(e){
+	count++;
+	if(count%2==0){
+	this.style.backgroundColor="yellow";
+}else{
+		this.style.backgroundColor="green";
+
+}}
+红块点击变绿，再点击变黄
+02拖拽
+<style type="text/css">
+ .demo{
+ 	height: 100px;
+ 	width: 100px;
+ 	background-color: red;
+ 	position: absolute;
+ 	left:0;
+ 	top:0;
+ }
+
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+
+<div class="demo"></div>
+<script type="text/javascript">
+function getStyle(obj,prop){
+            if(obj.currentStyle){
+                return obj.currentStyle[prop];
+            }else{
+                return window.getComputedStyle(obj,null)[prop];
+            }
+           }
+var div=document.getElementsByClassName('demo')[0],
+    disX=0,
+    disY=0;
+    div.addEventListener('mousedown',function(e){
+    	disX=e.clientX-parseInt(getStyle(this,'left'));console.log("a");
+    	disY=e.clientY-parseInt(getStyle(this,'top'));
+    	document.addEventListener('mousemove',mouseMove,false);
+    	div.addEventListener('mouseup',function(e){
+    		document.removeEventListener('mousemove',mouseMove,false);
+    	})
+    },false);
+    function mouseMove(e){
+    	div.style.left=e.clientX-disX+"px";
+    	div.style.top=e.clientY-disY+"px";
+    }
+</script>
+1. 如何绑定事件
+  #ele.oxxx=function(event){}
+     #兼容性很好，但是一个元素只能绑定一个处理程序
+     #基本等同于写在html行间上
+ #obj.addEventListener(type,fn,false);
+     #IE9以下不兼容，可以为一个事件绑定多个处理程序
+ #obj.attachEvent(“on”+type,fn);
+     #IE独有，一个事件同样可以绑定多个处理程序
+ #小练习：参考神马笔试题
+01eg：回调函数：当满足一定状态才执行的函数。
+          Js引擎为单线程
+
+<div class="demo" onclick="console.log('a')"></div>
+<script type="text/javascript">
+
+var div=document.getElementsByClassName('demo')[0];
+   div.onclick=function(e){
+        console.log('a');
+   }
+</script>
+02div.addEventListener('click'.function(){  console.log('a');},false);
+   /div.addEventListener('click',test,false);
+   function test(){
+    console.log("a");
+   }
+03 IE独有
+div.attachEvent('on'+type,function(){
+console.log('a');
+   });
+题：使用原生js.addEventListener,给每个li元素绑定一个click事件，输出它们的顺序
+<ul>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+<ul>
+    <li>a</li>
+    <li>a</li>
+    <li>a</li>
+    <li>a</li>
+</ul>
+<script type="text/javascript">
+var oLi=document.getElementsByTagName('li'),
+    len=oLi.length;
+    for(var i=0;i<len;i++){
+        (function(j){
+            oLi[j].addEventListener('click',function(){
+                console.log(j);
+            },false);
+        }(i))
+}
+1. 事件处理程序的运行环境
+   #ele.onxxx=function(event){}
+     #程序this指向是dom元素本身
+  #obj.addEventListener(type,fn,false);
+#程序this指向是dom元素本身
+  #obj.attachEvent(‘on’+type,fn);
+#程序this指向window
+ #封装兼容性的addEvent(elem,type,handle);方法
+01eg：var div=document.getElementsByTagName('div')[0];
+ div.onclick=function(){
+    console.log(this);
+ }
+本身
+ div.addEventListener('click',function(){
+        console.log(this);
+ },false);
+本身
+div.attachEvent('onclick',function(){
+    console.log(this);
+});
+Window(bug)所以封装
+即var div=document.getElementsByTagName('div')[0];
+ div.attachEvent('onclick',function(){
+    test.call(div);
+ });
+ function test(){
+    this.style.color="#fff";
+ }
+绑定事件封装综合方法：
+function addEvent(elem,type,handle){
+    if(elem.addEventListener){
+        elem.addEventListener(type,handle,false);
+    }else if(elem.attachEvent){
+            elem['temp'+type+handle]=handle;
+            elem[type+handle]=function(){
+                elem['temp'+type + handle].call(elem);
+            }
+        elem.attachEvent('on' + type,elem[type+handle]);
+    }else{
+        elem['on'+type]=handle;
+    }
+}
+1. 解除事件处理程序
+ #ele.onclick=false/''/null;
+ #ele.removeEventListener(type,fn,false);
+ #ele.detachEvent('on'+type,fn);
+ #注：若绑定匿名函数，则无法解除
+01eg：div.addEventListener('click',test,false);
+div.removeEventListener('click',test,false);
+Function test(){
+    console.log('a');
+}绑定然后解绑
+02eg
+点击一次就解除绑定
+div.addEventListener('click',test,false);
+function test(){
+    console.log('a');
+    this.removeEventListener('click',arguments.callee,false);
+}
+03eg：div.detachEvent('on'+type,test);
+04eg：封装解除绑定函数
+function removeEvent(elem,type,handle){
+    if(elem.removeEventListener){
+        elem.removeEventListener(type,handle,false);
+    }else if(elem.detachEvent){
+        elem.detachEvent('on'+type,handle);
+    }else{
+        elem['on'+type]=null;
+    }
+ }
+1. 事件处理模型-事件冒泡，捕获
+  #事件冒泡
+#结构上（非视觉上）嵌套关系的元素，会存在事件冒泡的功能，即同一事件，自子元素冒泡向父元素(自底向上)
+ #事件捕获
+#结构上(非视觉上)嵌套关系的元素，会存在事件捕获的功能，即同一事件，，自父元素捕获至子元素（事件源元素）。（自顶向下）
+#IE没有捕获事件
+#触发顺序：先捕获后冒泡
+#focus,blur,change,submit,reset,select等事件不冒泡
+01eg：
+<style type="text/css">
+   .wrapper{
+    width: 200px;
+    height: 200px;
+    background-color: red;
+   }
+   .content{
+    width: 100px;
+    height: 100px;
+    background-color: green;
+   }
+   .box{
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+   }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<div class="wrapper">
+   <div class="content">
+    <div class="box"></div>
+   </div>
+</div>
+<script type="text/javascript">
+var box=document.getElementsByClassName('box')[0],
+content=document.getElementsByClassName('content')[0],
+wrapper=document.getElementsByClassName('wrapper')[0];
+box.onclick=function(){
+    console.log('box');
+}
+content.onclick=function(){
+    console.log('content');
+}
+wrapper.onclick=function(){
+    console.log('wrapper');
+}
+红 wrapper 
+绿 content wrapper
+橘 box content wrapper
+02eg
+box.onclick=function(){
+    console.log('box');
+}
+wrapper.onclick=function(){
+    console.log('wrapper');
+}事件是一直有的，只是第二个没有处理函数，所以冒泡依然存在。
+03eg事件捕获只有谷歌浏览器有，得手动捕获
+.wrapper{
+    width: 200px;
+    height: 200px;
+    background-color: red;
+   }
+   .content{
+    width: 100px;
+    height: 100px;
+    background-color: green;
+   }
+   .box{
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+   }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<div class="wrapper">
+   <div class="content">
+    <div class="box"></div>
+   </div>
+</div>
+<script type="text/javascript">
+var box=document.getElementsByClassName('box')[0],
+content=document.getElementsByClassName('content')[0],
+wrapper=document.getElementsByClassName('wrapper')[0];
+box.addEventListener('click',function(){
+  console.log('box');
+},true);
+content.addEventListener('click',function(){
+  console.log('content');
+},true);
+wrapper.addEventListener('click',function(){
+  console.log('wrapper');
+},true);
+捕获
+红 wrapper 
+绿  wrapper content
+橘  wrapper content box 
+04eg捕获和冒泡只能存在一个
+.wrapper{
+    width: 200px;
+    height: 200px;
+    background-color: red;
+   }
+   .content{
+    width: 100px;
+    height: 100px;
+    background-color: green;
+   }
+   .box{
+    width: 50px;
+    height: 50px;
+    background-color: orange;
+   }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<div class="wrapper">
+   <div class="content">
+    <div class="box"></div>
+   </div>
+</div>
+<script type="text/javascript">
+var box=document.getElementsByClassName('box')[0],
+content=document.getElementsByClassName('content')[0],
+wrapper=document.getElementsByClassName('wrapper')[0];
+box.addEventListener('click',function(){
+  console.log('boxBubble');
+},false);
+content.addEventListener('click',function(){
+  console.log('contentBubble');
+},false);
+wrapper.addEventListener('click',function(){
+  console.log('wrapperBubble');
+},false);
+box.addEventListener('click',function(){
+  console.log('box');
+},true);
+content.addEventListener('click',function(){
+  console.log('content');
+},true);
+wrapper.addEventListener('click',function(){
+  console.log('wrapper');
+},true);
+
+红 wrapperBubble wrapper
+绿  wrapper contentBubble content wrapperBubble
+橘  wrapper content boxBubble box contentBubble wrappperBubble 
+解：黄色为事件执行 哪个先绑定，哪个先执行
+ 05eg focus聚焦 blur失去焦点
+1. 取消冒泡
+  #3c标准event.stopPropagation();但不支持ie9以下版本
+  # IE独有event.cancelBubble=true;
+ #封装取消冒泡的函数stopBubble(event)
+ #组织冒泡事件
+#默认事件-表单提交 a标签跳转 右键菜单
+#return false 以对象属性的方式注册的事件才生效
+#event.preventDefault();W3C标准，IE9以下不兼容
+#event.returnValue=false;兼容IE
+#封装组织默认事件 cancelHandler
+01eg：e表示事件原对象
+];
+box.addEventListener('click',function(e){
+  console.log('boxBubble');
+  e.stopPropagation();
+},false);
+点击黄色不冒泡
+02eg：封装取消冒泡的函数
+function stopBubble(event){
+  if(event.stopPropagation){
+    event.stopPropagation();
+  }else{
+    event.cancelable=true;
+  }
+ }
+03eg：取消右键出菜单事件
+document.oncontextmenu=function(){
+  return false;
+}
+04eg：document.addEventListener('contextmenu',function(e){
+  e.preventDefault();
+},false);
+05eg  document.attachEvent('oncontextmenu',function(e){
+  e.returnValue=false;
+})
+06eg：#封装组织默认事件 cancelHandler
+function cancelHandler(event){
+  if(event.preventDefault){
+    event.preventDefault();
+  }else if(event.returnValue){
+    event.returnValue=false;
+  }
+}
+07取消a标签跳转：<a href="javascript:void(0)">baidu.com</a>
+1. 事件对象
+   #event||window.event用于IE
+   #事件源对象：
+        # event.target  火狐独有的
+        #event.srcElement Ie独有的
+        #这俩chrome都有
+    #兼容性写法
+
+
+
+01eg：IE不给传e，直接传到window.event上
+document.addEventListener('click',function(e){
+  var  event=e||window.event;
+},false);
+02事件兼容性写法
+document.addEventListener('click',function(e){
+  var  event=e||window.event;
+  var target=event.target||event.srcElement;
+},false);
+1. 事件委托
+   #利用事件冒泡，和事件源对象进行处理
+       #优点
+          #性能：不需要循环所有的元素一个个绑定事件
+          #灵活：当有新的子元素时不需要重新绑定事件
+
+01eg：document.addEventListener('click',function(e){
+  var  event=e||window.event;
+  var target=event.target||event.srcElement;
+  console.log(target.innerText);
+},false);
+打印很多个li的内容
+重点：1.绑定事件兼容性写法
+      2.解除绑定
+      3.取消冒泡
+      4.组织默认
+      5.事件委托 （获取事件对象 获取事件源对象）

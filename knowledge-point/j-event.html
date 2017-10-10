@@ -1,0 +1,168 @@
+                     event
+1. #事件分类
+  ·鼠标事件
+  ·click mousedown mouseup mousemove contextmenu mouseover mouseout
+  ·用button来区分鼠标的按键，0/1/2
+  ·DOM3标准规定：click只能监听左键，只能通过mousedown mouseup来判断鼠标键
+  ·如何解决mousedown和click的冲突
+01eg：区分click事件和拖拽
+<style type="text/css">
+  .wrapper{
+    height: 100px;
+    width: 100px;
+    background-color: red;
+  }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<div class="wrapper">
+</div>
+<script type="text/javascript">
+       var div=document.getElementsByClassName('wrapper')[0];
+       var key=false,
+       firstTime=0,
+       lastTime=0;
+       div.onclick=function(){
+        if(key){
+          console.log('click');
+          key=!key;
+        }
+       }
+       div.onmousedown=function(){
+        firstTime=new Date().getTime();时间戳
+       }
+       
+       div.onmouseup=function(){
+        lastTime=new Date().getTime();
+        if(lastTime-firstTime < 200){
+          key=true;
+        }
+       }
+</script>
+02eg div.onclick=function(e){
+        console.log(e);}
+鼠标左键button为0 右键button为2 中键为1
+ div.onmousedown=function(e){
+        if(e.button==2){
+          //right
+        }else{
+          //left
+        }
+      }
+03eg
+document.oncontextmenu=function(){
+        return false;
+      }取消右键菜单功能
+04eg：left top是相对于木块的左上点来说
+拖拽木块
+.wrapper{
+    height: 100px;
+    width: 100px;
+    background-color: red;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<div class="wrapper">
+</div>
+<script type="text/javascript">
+
+       var div=document.getElementsByClassName('wrapper')[0];
+       function drag(elem){
+        var disX,
+            disY;
+      addEvent(elem,'mousedown',function(e){
+          var event=e||window.event;
+          disX=event.clientX-parseInt(getStyle(elem,'left'));
+          disY=event.clientY-parseInt(getStyle(elem,'top'));
+          addEvent(document,'mousemove',mouseMove);
+          addEvent(document,'mouseup',mouseUp);
+          stopBubble(e);
+          cancelHandler(e);
+      })
+      function mouseMove(e){
+        var event=e||window.event;
+        elem.style.left=event.clientX-disX+'px';
+        elem.style.top=event.clientY-disY+'px';
+
+      }
+      function mouseUp(e){
+        removeEvent(document,'mousemove',mouseMove);
+        removeEvent(document,'mouseup',arguments.callee);
+      }
+       }
+       drag(div);
+     
+</script>
+04eg
+IE事件捕获
+   domElem.setCapture();当前元素调用setCapture以后，它会把后续发生的事件都归到其身上（事件捕获）
+   domElem.releaseCapture();释放捕获行为
+2.#keydown keyup keypress
+ #keydown>keypress>keyup
+ #keydown和keypress的区别
+  ·keydown可以响应任意键盘按键
+  ·keypress返回ASCII码，可以转换成相应字符
+01eg：keydown和keypress键盘按下，keydown可以响应任意键盘按键，keypress返回ASCII码，可以转换成相应字符。
+02eg：keydown：which：唯一标识，与键盘一对一关系，charCode为ASCII码值
+3. ASCII码是美国定义的：0-1111111（0-127）0-11111111(0-255),
+ fromCharCode可接受一个指定的unicode值，然后返回一个字符串，                                                                                                                                                                                                                                                                            是String.fromCharCode()上的一个静态方法，例如 String.say = function(){}   String.say();
+3. 系统原生构造方法叫做类，指构造函数本身
+
+      静态方法：Math.random();
+                Math.floor();
+                Math.ceil();
+01egdocument.onkeypress=function(e){
+        var str=String.fromCharCode(e.charCode);
+        console.log(str);
+      }
+打印对应的键盘值
+3. 文本操作事件
+ Input focus blur change
+01eg:var input=document.getElementsByTagName('input')[0];
+    input.oninput=function(e){
+      console.log(e);
+}
+02eg:输入框
+.fontColor{
+    color:#424242;
+  }
+  .fontNormalColor{
+    color:#999;
+  }
+	</style>
+    <script type="text/javascript" src="tools2.js"></script>
+</head>
+<body>
+<input type="text" style="border:2px solid black;" class="fontNormalColor" value="请输入用户名" onfocus="if(this.value=='请输入用户名'){this.value='';this.className='fontColor'}"onblur="if(this.value==''){this.value='请输入用户名';this.className='fontNormalColor'}">
+03eg：  <input type="text" onchang="console.log('a')">
+   常用：<select onchange="console.log('a');">
+    <option >1</option>
+    <option >2</option>
+    <option >3</option>
+  </select>
+
+ <input type="radio" onchange="console.log('a');">
+04eg：重置：
+<form >
+  <input type="text">
+  <input type="reset">
+</form>
+3. 事件分类
+·窗口操作类（window上的事件）
+·scroll load
+·小练习：fix定位（js兼容）
+01eg：window.onload=function(e){
+
+ }
+页面加载并执行完后会触发load事件
+放在句柄上是在body上
+Window.scroll=function(e){
+}
+
+      

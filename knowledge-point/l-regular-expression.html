@@ -1,0 +1,402 @@
+               正则
+
+1.课前补充：
+转义字符
+多行字符串
+字符串换行符
+01eg
+var str="\"";
+console.log(str);
+"
+02eg
+:\n换行\r回车\t制表符
+var str="abc\nabc";
+console.log(str);
+abc abc
+03eg:多行字符串
+var html="
+<p></p>\
+ <div></div>\
+ <span></span>\
+"
+2.正则表达式的作用：匹配特殊字符或有特殊搭配原则的字符的最佳选择
+RegExp
+两种创建方式
+直接量
+new RegExp();
+个人推荐用直接量
+var regExp=/abc/gim;
+var regExp2 = new RegExp(regExp);
+var regExp1 = new RegExp("abc","g");
+01eg:var reg=/a/;
+var reg1 = new RegExp(reg);
+reg.abc="123" 123
+reg1.abc  undefined
+两个正则表达式不同为两个对象，只是内容相同
+对比
+var reg=/a/;
+var reg1 = RegExp(reg);
+reg.abc="123" 123
+reg1.abc  123
+两个副本，相当于引用
+02eg:var reg1=/\w\s\d/
+var reg=new RegExp("\\w\\s\\d")
+
+var reg=/abc/;
+var str="abcdab";判断str中是否有reg的字符串
+reg.test(str);
+True
+3.
+修饰符 描述
+i 执行对大小写不敏感的匹配。
+g 执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）。
+m 执行多行匹配。
+var reg=/abc/i;忽略大小写
+var str="abCdab";
+reg.test(str);
+true
+var reg=/abc/g;//全局匹配
+var str="abcdabcdabc";
+str.match(reg)
+["abc","abc","abc"]
+
+var reg=/abc/img;多行匹配
+var str="abc\nabcd";
+str.match(reg)
+null
+
+var reg=/^e/ig;
+var str="abcebcd";
+str.match(reg)
+null
+
+var reg=/^e/igm;
+var str="abc\nebcd";
+str.match(reg)
+["e"]
+4. 表达式：
+01eg：
+var reg=/[abc]/g;
+var str="abcebcd";
+str.match(reg);
+["a", "b", "c", "b", "c"]
+把所有匹配的abc都匹配出来，一个表达式只匹配出一个
+var reg=/[a-zA-Z]/g;
+var  str="bb";
+str.match(reg)
+["b","b"]
+02eg：var reg=/[A-z0-9]012/g;
+var str="bb012";
+str.match(reg);
+["b012"]
+
+var reg=/[A-z0-9*][A-z0-9]012/g;
+var str="*b012";
+str.match(reg)
+[*012]
+
+03eg
+表达式中的^代表非
+var reg=/[^a][A-z0-9]012/g;
+var str="00012";
+str.match(reg)
+["00012"]
+4. 元字符
+元字符（Metacharacter）是拥有特殊含义的字符：
+元字符 描述
+. 查找单个字符，除了换行和行结束符。
+\w  查找单词字符。
+\W  查找非单词字符。
+\d  查找数字。
+\D  查找非数字字符。
+\s  查找空白字符。
+\S  查找非空白字符。
+\b  查找位于单词的开头或结尾的匹配。
+\B  查找不处在单词的开头或结尾的匹配。
+\0  查找 NUL 字符。
+\n  查找换行符。
+\f  查找换页符。
+\r  查找回车符。
+\t  查找制表符。
+\v  查找垂直制表符。
+\xxx  查找以八进制数 xxx 规定的字符。
+\xdd  查找以十六进制数 dd 规定的字符。
+\uxxxx  查找以十六进制数 xxxx 规定的 Unicode 字符。
+01eg：·
+var reg=/./g;//除了\r\n之外的都可以匹配出来
+var str="00012";
+str.match(reg)
+["0", "0", "0", "1", "2"]
+02eg\w
+\w  a-zA-Z0-9
+var reg = /\w/g;
+var str="00012-!?";
+str.match(reg)
+["0", "0", "0", "1", "2"]
+
+var reg = /\w\w/g;
+var str="00012-!?";
+str.match(reg)
+["00", "01"]
+03eg\d数字
+var reg = /\d\D/g;
+var str="00012-!?";
+str.match(reg)
+["2-"]
+04eg\s
+\s 元字符用于查找空白字符。
+空白字符可以是：
+* • 空格符 (space character)
+* • 制表符 (tab character)
+* • 回车符 (carriage return character)
+* • 换行符 (new line character)
+* • 垂直换行符 (vertical tab character)
+* • 换页符 (form feed character)
+05eg：var reg=/(a|c)b/g;
+var str="abcb";
+str.match(reg)
+["ab", "cb"]
+
+6. 量词
+量词
+量词  描述
+n+  匹配任何包含至少一个 n 的字符串。
+n*  匹配任何包含零个或多个 n 的字符串。
+n?  匹配任何包含零个或一个 n 的字符串。
+n{X}  匹配包含 X 个 n 的序列的字符串。
+n{X,Y}  匹配包含 X 或 Y 个 n 的序列的字符串。
+n{X,} 匹配包含至少 X 个 n 的序列的字符串。
+n$  匹配任何结尾为 n 的字符串。
+^n  匹配任何开头为 n 的字符串。
+?=n 匹配任何其后紧接指定字符串 n 的字符串。
+?!n 匹配任何其后没有紧接指定字符串 n 的字符串。
+01eg:a+  1到无穷个a
+var reg=/a+/g; 
+var str="baaaabaakja";
+str.match(reg)
+["aaaa", "aa", "a"]
+02eg:a* 0到无穷个a
+var reg=/a*c/g; 
+var str="abc";
+str.match(reg)
+["c"]
+03eg a？0-1个a
+var reg=/(aa|b)?/g;
+var str="aaaaacb";
+str.match(reg)
+["aa", "aa", "", "", "b", ""]
+04eg{}
+var reg=/a{2}/g;
+var str="aaaaacb";
+str.match(reg)
+["aa", "aa"]
+也可以写区间
+var reg=/a{2,3}/g;贪婪匹配
+var str="aaaaacb";
+str.match(reg)
+["aaa", "aa"]
+05eg：后面加？最小匹配
+var reg = /a{2,}?/g;
+var str="aaaaaaacb";
+str.match(reg)
+["aa", "aa", "aa"]
+06eg：ab$以ab结尾的ab
+ var reg=/^ab$/g;
+ var str="ab";
+ str.match(reg)
+ ["ab"] 要完全相同
+07eg：写一个正则表达式，检验字符串首尾是否含有数字
+var reg=/^\d|\d$/g;
+var str="0abc"
+reg.test(str);
+True
+08eg ？=正向预查，正向断言
+var reg=/\w(?=abc)/g;谁的后面是abc
+var str="xabcyabc";
+console.log(str.match(reg));
+["x""y"]
+09eg:?!非正向预查
+var reg=/x(?!abc)/g;
+var str="xabcxbcd";
+console.log(str.match(reg));
+["x"]
+10eg：var reg=/^\d[\s\S]*\d$/g 匹配首尾是数字的
+6. 属性：
+RegExp 对象属性
+FF: Firefox, IE: Internet Explorer
+属性  描述  FF  IE
+global  RegExp 对象是否具有标志 g。  1 4
+ignoreCase  RegExp 对象是否具有标志 i。  1 4
+lastIndex 一个整数，标示开始下一次匹配的字符位置。  1 4
+multiline RegExp 对象是否具有标志 m。  1 4
+source  正则表达式的源文本。  1 4
+01eg：source 取原文本
+var reg=/ghj/g;
+undefined
+reg.source
+"ghj"
+02eg：lastIndex 决定exec函数在全局匹配的情况下开始的位置
+var reg=/(a)(b)(c)/g;
+var str="cdabcdabcda";
+console.log(reg.lastIndex);
+0
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 2, input: "abcdabcda"]
+console.log(reg.lastIndex);
+5
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 6, input: "abcdabcda"]
+console.log(reg.lastIndex);
+9
+console.log(reg.exec(str));
+null
+console.log(reg.lastIndex);
+0
+手动：
+var reg=/(a)(b)(c)/g;
+var str="cdabcdabcda";
+reg.lastIndex=4;
+console.log(reg.exec(str));
+["abc", "a", "b", "c", index: 6, input: "cdabcdabcda"]
+6. 方法
+RegExp 对象方法
+FF: Firefox, IE: Internet Explorer
+方法  描述  FF  IE
+compile 编译正则表达式。  1 4
+exec  检索字符串中指定的值。返回找到的值，并确定其位置。 1 4
+test  检索字符串中指定的值。返回 true 或 false。 1 4
+01eg：exec：
+var reg=/(a)(b)(c)/;
+var str="abcdabcda";
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 0, input: "abcdabcda"]
+
+var reg=/(a)(b)(c)/g;
+var str="cdabcdabcda";
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 2, input: "abcdabcda"]
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 6, input: "abcdabcda"]
+console.log(reg.exec(str));
+Null
+console.log(reg.exec(str));
+["abc","a", "b","c", index: 2, input: "abcdabcda"] 循环
+6. string对象的方法：
+支持正则表达式的 String 对象的方法
+FF: Firefox, IE: Internet Explorer
+方法  描述  FF  IE
+search  检索与正则表达式相匹配的值。  1 4
+match 找到一个或多个正则表达式的匹配。  1 4
+replace 替换与正则表达式匹配的子串。  1 4
+split 把字符串分割为字符串数组。 1 4
+01eg  search 检索匹配的位置
+var reg=/abc/g;
+var str="cbabcdabcda";
+console.log(str.search(reg));  2
+console.log(str.search(reg));  2
+02eg  match
+var reg=/abc/;
+var str="cbabcdabcda";
+console.log(str.match(reg));  
+["abc", index: 2, input: "cbabcdabcda"]
+03eg   split
+var reg=/[-\d]/g;
+var str="a-c-d-a0f-e";
+console.log(str.split(reg));  
+["a", "c", "d", "a", "f", "e"]
+04eg  replace 替代
+var reg=/ab/g;
+var str="abcd";
+console.log(str.replace("bc","aa"));
+aaad
+·*只替代第一个
+var reg=/ab/g;
+var str="abcdbcdbcd";
+console.log(str.replace("bc","aa"));
+Aaadbcdbcd
+
+·*全部变化
+var reg=/ab/g;
+var str="abcdbcdbcd";
+console.log(str.replace(/bc/g,"aa"));
+aaadaadaad
+
+·ab-->ba
+var reg=/(\w)(\w)/g;
+var str="ab";
+console.log(str.replace(reg,"$2$1"));
+
+·第一个形参$指匹配出的整体内容的字符串
+第二个形参$1代表第一个子表达式的内容
+第三个形参$2代表第二个子表达式的内容
+var reg=/(\w)(\w)/g;
+var str="ab";
+console.log(str.replace(reg,function($,$1,$2){
+   return $ + $2 +$1;
+}));
+abba
+ ·原题 
+请将形如aaaabbbb的字符串调换成bbbbaaaa的形式（提示：用正则做可给满分，其他方法酌情给分）
+var str="aaaabbbb";
+var reg=/(\w{4})(\w{4})/g;
+console.log(str.replace(reg,"$2$1"));
+Bbbbaaaa
+请将如下变量名转换为小驼峰式。
+my-first-name-->myFirstName(提示：用正则做可得满分，其他方法)
+toUpperCase()将当前字符转换成大写
+var str="my-first-name";
+var reg=/-(\w)/g;
+str.replace(reg,function($,$1){
+   return $1.toUpperCase();
+})
+一串连续的数字，请实现打点功能，如100000000-->100.000.000
+var str="100000000";
+var reg=/(?=(\B)(\d{3})+$)/g;
+console.log(str.match(reg));
+console.log(str.replace(reg,"."));
+
+10 匹配固定模式：
+var reg=/(\w)(\w)\2\1/g;//反向引用 
+var str="abbacdda";
+console.log(str.match(reg));
+["abba"]  
+
+var reg=/(\w{4})\1/g;//反向引用 
+var str="abcdabcd";
+console.log(str.match(reg));
+["abcdabcd"]  
+11  ？：
+var reg=/(?:a|b)(\w)\1/g;   //(?:a|b)不作为子表达式，只做括号使用
+var str="accbdd";
+console.log(str.match(reg));
+["acc", "bdd"]
+12. 贪婪匹配和非贪婪匹配
+加？为非贪婪
+{n,}?,  *?,  +?,   ??,  {m,n}?
+  n    0   1    0    m
+13   \b单词边界
+var reg=/\bacc/;
+var str="accb bdaccd efg";
+console.log(str.match(reg));
+["acc", index: 0, input: "accb bdaccd efg"]
+
+var reg=/accb\b/g;
+var str="accb baaccbf efg";
+console.log(str.match(reg));
+["accb"]
+\B 非单词边界
+var reg=/\Baccb\B/;
+var str="accb baaccbf efg";
+console.log(str.match(reg));
+["accb", index: 7, input: "accb baaccbf efg"]
+
+汉字不算单词 
+var reg=/\bc/;
+var str="维生素c";
+console.log(str.match(reg));
+["c", index: 3, input: "维生素c"]
+14. 转义 匹配？*
+var reg=/\?\*/;
+var str="?*";
+console.log(str.match(reg));
+["?*", index: 0, input: "?*"]
