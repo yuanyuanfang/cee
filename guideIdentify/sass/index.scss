@@ -1,0 +1,122 @@
+html,body {
+	line-height: 1.5;
+	height: 100%;
+	width: 100%;
+	font-size: .26rem;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    color: #000;
+}
+
+.clearfix:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+.wrap{
+   // max-width: 7.5rem;
+    margin: 0 auto;
+    width:7.5rem;
+    .guide-identify{
+    	padding:0 0.48rem;
+    	.real-name,.vehicle-year-examine,.assess-job,.five-choose{
+    		padding-top:0.53rem;
+    		padding-bottom:0.48rem;
+    		border-bottom: 1px dashed #E3E3E3;
+			.real-name-title,.vehicle-title,.assess-job-title,.five-choose-title{
+				    >div{
+						    font-family: PingFangSC-Light;
+							font-size: 0.36rem;
+							color: #000000;
+							line-height: 0.36rem;
+							margin-bottom:0.37rem;
+							img{
+						    	width:auto;
+						    	height:0.4rem;
+						    	margin-left:0.2rem;
+						    	margin-top: -0.1rem;
+						    	vertical-align: middle;
+						    }
+				    }
+				    p{
+				    	font-family: PingFangSC-Light;
+						font-size: 0.26rem;
+						color: #4A4A4A;
+						letter-spacing: 0;
+						line-height: 0.32rem;
+				    }
+			}
+			ul{
+				position:relative;
+				li{
+					font-family: PingFangSC-Light;
+					font-size: 0.26rem;
+					color: #7F7F7F;
+					letter-spacing: 0;
+					line-height: 0.26rem;
+					margin-top:0.34rem;
+					img{
+						width:0.3rem;
+						height:0.2rem;
+					    margin-left: 0.2rem;
+					}
+					.identify-date{
+						font-size: 0.24rem;
+						// width:1.43rem;
+						float:right;
+   						font-family: PingFangSC-Light;
+						color: #929292;
+						line-height: 0.24rem;
+						span{
+							position:absolute;
+							right:1.4rem;
+						}
+					}
+				}
+			}
+    	}
+    	.five-choose{
+    		padding-bottom:0.8rem;
+    		border-bottom:0;
+    		.five-choose-title{
+    			.five-check-detail{
+ 					float:right;
+ 					font-family: PingFangSC-Light;
+					font-size:0.26rem;
+					color: #24BCFF;
+					letter-spacing: 0;
+					line-height:0.26rem;
+    			}
+    		}
+    		.five-process{
+    			.process,.check,.standards{
+    				position:static;
+    				float:left;
+    				width:1.8rem;
+    				height:1.7rem;
+    				margin-top:0.44rem;
+    				img{
+    					height:1.1rem;
+    					width:1.1rem;
+    					 margin-left:0.3rem;
+    					 margin-bottom:0.2rem;
+    				}
+    				>div{
+    					font-family: PingFangSC-Light;
+						font-size: 0.24rem;
+						color: #444444;
+						letter-spacing:0.01rem;
+						text-align:center;
+    				}
+    				&.process{
+    					margin-right:0.57rem;
+	    			}
+	    			&.check{
+	    				margin-right:0.57rem;
+	    			}
+    			}
+    			
+    		}
+    	}
+    }
+}
