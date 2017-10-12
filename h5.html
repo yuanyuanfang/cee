@@ -1,0 +1,88 @@
+~h5新增标签：1.header 2.hgroup 3.footer 4.address 5.artical 6 section 7 nav 8 aside 
+~audio video
+～canvas如何使用canvas
+创建canvas元素<canvas width=500 height=500></canvas>
+获得canvas元素var canvas =document.getElementById(‘myCanvas’); 相当于画布 
+获取canvas的上下文var canvas = canvas.getContext('2d'); 相当于画笔
+
+绘制图案：
+不过canvas绘制还需要多两步：beginPath()、clothPath()，我们要告诉浏览器开始绘制路径和结束绘制路径。
+clothPath会在绘制结束的时候，自动将终点和起点连接起来。
+注意：
+1.fill和stroke方法都是作用在当前的所有子路径 stroke()、fill()
+2.完成一条路径之后要开启另一条路径必须要beginPath()，否则会自动归于上一条路径，closePath倒不是必须的。
+
+var canvas =document.getElementById("canvas");  
+var context =canvas.getContext("2d");  
+var lGrd = context.createLinearGradient(0,0, 300, 300);  
+lGrd.addColorStop(0, '#ff0000');  
+lGrd.addColorStop(1, '#0000ff');  
+context.fillStyle = lGrd;  
+context.fillRect(0, 0, 300, 300);  
+ctx.stroke();
+   
+var rGrd =context.createRadialGradient(450, 150, 30, 450, 150, 150);  
+rGrd.addColorStop(0, 'white');  
+rGrd.addColorStop(1, 'black');  
+context.fillStyle = rGrd;  
+context.fillRect(300, 0, 300, 300);  
+～图片
+drawImage();
+这个方法可以有很多参数，但是第一个参数一定是一个img
+3个参数：(x, y)
+5个参数：(x, y, dx, dx)
+9个参数：(x1, y1, dx1, dx2, x2, y2, w2, h2)
+这个方法可以将图片绘制到canvas画布上。
+oDataURL()
+将canvas的内容抽取成一张图片
+toDataURL() 是canvas自身的方法而不是上下文的方法
+
+
+var image = document.getElementById('img');
+ctx.drawImage(image, 0, 0, 100, 100);
+var data = canvas.toDataURL();
+console.log(data);
+
+将canvas的内容放到img里面：
+ctx.fillRect(0, 0, 100, 100);
+var data = canvas.toDataURL();
+var img = document.createElement('img');
+img.src = data;
+document.body.appendChild(img);
+
+toDataURL
+
+这个方法可以让canvas绘制出来的图片变成一段URL，从而实现了图片压缩的功能，我们只要在img标签的src处填写这一段url就可以了。
+拖拽
+html5给标签增加了拖拽功能，也就是说我们不用js代码可以实现对标签的拖拽了。
+
+1.创建一个可拖拽元素
+<div id=”drag” draggable=“true”></div>
+2.拖拽的相关事件
+dragstart 被拖拽元素 开始时触发
+dragend 被拖拽元素 结束时触发
+dragenter 目标元素 拖拽元素进入目标元素
+dragover 目标元素 拖拽元素在目标元素上移动
+drop 目标元素 被拖拽的元素在目标元素上同时鼠标放开触发的事件
+这里需要注意的一点：我们必须要阻止dragover的默认事件才能成功触发drop事件
+
+序列化：将对象的状态信息转换为可以存储或传输的形式的过程称为序列化，我们JSON中的stringify方法就属于序列化。
+为什么需要序列化呢？
+因为我们知道，在网络中传输的数据只能是文本或者二进制，像我们js中的对象之类的都是无法传递的，因此我们只有将数据进行序列化之后，才能通过网络请求将数据发送到服务器或者另一个客户端。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
