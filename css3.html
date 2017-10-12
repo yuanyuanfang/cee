@@ -1,0 +1,236 @@
+css3的功能：CSS3提供了强大而且精准的选择器，提供了多种背景填充方案、可以实现渐变颜色、改变元素形状、角度、加阴影效果，新的报纸布局、弹性盒子，ie6混杂模式的盒子模型，新的计量单位，动画效果等等。
+～一些css3的属性
+1。border-radius:
+border-radius是一个复合属性，它是由border-top-left-radius、border-top-right-radius、border-bottom-left-radius、border-bottom-right-radius四个属性复合而来。
+半圆的写法：div {
+	height:50px;
+	width: 100px;
+	border-top-left-radius : 50px;
+	border-top-right-radius: 50px;
+	background-color: red;
+}
+2.box-shadow:
+box-shadow: x轴偏移量 y轴偏移量 [阴影模糊半径] [阴影扩展半径] [阴影颜色] [投影方式]
+3.border-image:
+border-image: url(xxx.png) number(默认单位是px) repeat / round / stretch
+4.rgba
+5.background: linear-gradient:
+linear-gradient([direction], color[percent], color[percent], …); 线性渐变
+radial-gradient(shape at position, color[percent], …);径向渐变
+6.background-origin background-clip
+borde-box、padding-box、content-box
+7. background-size
+auto是不改变图片的原始宽高
+cover是同比例放大，一张图片填满box
+contain是尽量让一张图片存进box，多出的部分重复显示
+
+～伪类选择器
+伪类和伪元素之间的区别：伪类是用于给某些选择器添加特殊效果的，相当于我们创建出来一个类，伪元素的效果则是需要添加一个实际元素才能达到的。
+CSS3中新增的伪类选择器：
+1.:first-child :last-child :nth-child(n)
+p:nth-child(2n) {
+	background-color: red;
+}
+2.:first-of-type :last-of-type :nth-of-type(n)
+3.:not()
+p:not([class="demo"]) {
+	background-color: red;
+}
+4.:target
+#demo:target {
+	background-color: green;
+}
+<a href="#demo">click me</a>
+<div id="demo"></div>
+5.:enabled 默认:disabled不可用
+<input type="text" disabled="disabled">
+～伪元素选择器
+1.::selection
+这个伪元素可以改变当文本被选中状态下的样式，默认是蓝底白字。
+p::selection {
+	color: white;
+	background-color: orange;
+}
+如果我们想设置不允许用户选中文本的话，可以用这个属性：
+*{
+	-webkit-user-select: none;
+}
+～图形变换
+transform属性
+1.rotate
+这个属性值是旋转的意思，默认是沿着z轴旋转。单位是deg——度数。
+transform: rotateX(45deg) rotateY(45deg) rotateZ(45deg);
+2.scale
+scale的意思是让元素进行缩放，属性值填写的就是缩放倍数，1代表不进行缩放，小于1是缩小，大于1是放大，以元素的中心为缩放原点。
+transform: scale(2);
+3.skew
+kew的意思是对元素进行扭曲。
+transform: skew(45deg);
+skewX是沿着X轴进行扭曲，元素的高度不变，左右两个边扭曲一定的角度。
+skewY是沿着y轴进行扭曲，元素的宽度不变，上下两个边扭曲一定的角度。
+4.translate
+transform: translateX(-50%) translateY(-50%);
+5.translate-origin
+这个属性是设置变换原点的作用，上面那些变换的原点默认都是中心点，这个属性就可以更换原点。
+transform: rotate(45deg);
+transform-origin: left top;
+～图形过渡
+transition就是过渡动画的属性。
+这个属性也是一个复合属性，主要包括以下几个子属性：
+transition-property 指定过渡或者动态模拟的css属性
+transition-duration 指定过渡所需要的时间
+transition-timing-function 指定过渡函数
+transition-delay 指定延迟时间
+～css3动画
+二维动画-animation
+animation是一个复合属性，它包括以下几个组成部分：
+animation-name：执行动画的keyframes的名字。
+animation-duration：执行动画的总时长。
+animation-timing-function：指定过渡函数。
+animation-delay：执行延迟时间。
+animation-direction：动画播放的方式。这个属性的值主要有：normal正常播放模式、reverse倒序播放、alternate动画在奇数次正向播放偶数次倒序播放、alternate-reverse动画在奇数次倒序播放偶数次正向播放。
+animation-iteration-count：动画执行的次数。infinite是无限次，写一个数字就是要执行几次。
+animation-fill-mode：执行完动画后物体停止的位置。forwards是停在结束的位置上、backwards是快速执行初始帧（这个最好配合延迟来观察）、none是回到初始帧的位置、both是同时具有forwards和backwards的效果。
+animation-play-state：控制动画的播放状态。running是播放、paused是暂停。
+div:hover {
+	animation-play-state: paused;
+}
+div.demo {
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: red;
+	border-radius: 50%;
+	animation: move 3s ease alternate infinite;
+}
+
+@keyframes move {
+	0% {
+		top: 0px;
+	}
+	100% {
+		top: 400px;
+	}
+}
+~三维动画-transform-style
+3d动画的一个核心属性就是transform-style了，这个属性可以让我们设置元素是在2d平面还是3d空间，属性值是flat或者preserve-3d。默认情况下是flat（二维）。
+除了这个属性，还有另外一个用在父级元素上的属性——perspective景深。
+<div class="stage">
+	<div class="actor">ACTOR</div>
+</div>
+ 
+.stage {
+	perspective: 1200px;
+	height: 200px;
+	width: 200px;
+}
+.stage .actor {
+	transform-style: preserve-3d;
+	width: 100px;
+	height: 100px;
+	background-color: red;
+	text-align: center;
+	line-height: 100px;
+	transform: rotateX(45deg);
+}
+
+下面我们可以用3d动画效果来实现一个旋转的立方体的demo：
+<div class="stage">
+	<div class="actor">
+		<div>1</div>
+		<div>2</div>
+		<div>3</div>
+		<div>4</div>
+		<div>5</div>
+		<div>6</div>
+	</div>
+</div>
+
+.stage {
+	perspective: 1200px;
+	height: 400px;
+	width: 400px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+	margin: auto;
+	border: 1px solid red;
+}
+.stage .actor {
+	animation: cube 3s ease infinite;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+}
+.actor div {
+	position: absolute;
+	width: 200px;
+	height: 200px;
+	left: 50%;
+	top: 50%;
+	margin-left: -100px;
+	margin-top: -100px;
+	transform-style: preserve-3d;
+	text-align: center;
+	line-height: 200px;
+	font-size: 30px;
+}
+.actor div:nth-of-type(1) {
+	background-color: red;
+	transform: rotateX(180deg) translateZ(100px);
+}
+.actor div:nth-of-type(2) {
+	background-color: blue;
+	transform: translateZ(100px);
+}
+.actor div:nth-of-type(3) {
+	background-color: yellow;
+	transform: rotateY(-90deg) translateZ(100px);
+}
+.actor div:nth-of-type(4) {
+	background-color: green;
+	transform: rotateY(90deg) translateZ(100px);
+}
+.actor div:nth-of-type(5) {
+	background-color: pink;
+	transform: rotateX(-90deg) translateZ(100px);
+}
+.actor div:nth-of-type(6) {
+	background-color: purple;
+	transform: rotateX(90deg) translateZ(100px);
+}
+@keyframes cube{
+	0% {
+		transform: rotateX(0deg) rotateY(0deg);
+	}
+	50% {
+		transform: rotateX(180deg) rotateY(180deg);
+	}
+	100% {
+		transform: rotateX(360deg) rotateY(360deg);
+	}
+}
+perspective-origin
+
+这个属性是设置观察元素的位置，默认是中心点也就是50% 50%的位置。
+
+backface-visibility
+
+这个属性在子元素上设置的，是否可以展示背面，默认是hidden，当设置visible的时候就可以展示背面了。
+~css3动画性能优化
+ 我们要尽可能多的利用硬件能力，如使用3d变形来开启GPU加速
+transform: transition3d(0, 0, 0);
+transform: translateZ(0);
+CSS
+这两个属性都会开启GPU硬件加速模式，从而让浏览器在渲染动画的时候从CPU转向GPU。
+如果动画过程中出现闪烁，可以尝试下面的hack：
+backface-visibility：hidden；
+perspective：1000px;
+CSS
+• 尽可能让动画元素不在文档流中，以减少重绘重排，给动画元素的position设置成flex或者absolute最好。这样动画过程中只会部分重绘。
+• 在页面中尽量少的使用fixed，fixed非常消耗性能。

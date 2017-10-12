@@ -1,0 +1,105 @@
+cookie
+cookie是由服务器端生成的，发送给User-Agent（一般是浏览器），（服务器告诉浏览器设置一下cookie），浏览器会将cookie以key/value的形式保存在某个目录下的文本文件内，下一次请求同一网站时就发送该cookie给服务器（前提是浏览器设置启用cookie）。
+
+可以理解为cookie就是一个小型的保存记录的文件（浏览器对cookie的内容大小有所限制）。
+
+为什么会有cookie？
+
+我们前面提到过http是无状态的协议，状态都是由cookie来控制的。
+
+比如我们登录一个账号之后，我们在一段时间之内再登录这个页面就不需要重新登录，直接就是登录状态，我们的登录状态信息这个时候就存在cookie里面。
+
+cookie的特点
+
+1.有生命周期
+
+2.满足同源策略
+
+3.内存大小受到限制（一般在4k左右）
+
+• 生命周期
+
+每一个cookie都有一个生命周期，我们可以通过设置cookie的Expires值来设置这一条cookie信息失效的时间，默认是当浏览器关闭的时候失效。
+
+我们可以利用new Date()的setTime和getTime来设置失效时间。
+
+• 满足同源策略
+
+不同源的情况下，cookie一样是无法传递的。但是我们会发现我们登陆了百度账号之后，再登录百度知道或者百度文库，账号都是登录状态，但是这几个网页之间的主机名是不相同的。
+
+这里就用到我们前面跨域问题里提到的document.domain了。
+
+这几个百度网页虽然不同源，但它们都是在.baidu.com这一个主域下的子域，这种情况下，我们只要把这几个页面的document.domain都设置成这个子域的名字，就可以实现跨域通信了。
+
+ 
+document.domain = 'baidu.com';
+JavaScript
+注意：cookie在本地是可以被更改的，敏感数据不要放在cookie里面。
+
+现在，我们就可以封装一下cookie的增删改查的函数了。
+
+ 
+function setCookie(name, value, time) {
+	var oDate = new Date();
+	oDate.setDate(oDate.getDate() + time);
+	docoumet.cookie = name + '=' + value + ';expires=' + oDate;
+}
+JavaScript
+ 
+function getCookie(key) {
+	var arr = document.cookie.split('; ');
+	for(var i = 0, len = arr.length; i < len; i++) {
+		var temp = arr[i].split('=');
+		if(temp[0] == key) {
+			return temp[1];
+		}
+	}
+}
+JavaScript
+ 
+function removeCookie (key) {
+	setCookie(key, '', -1);
+}
+JavaScript
+这里我们注意：在js中我们给一个变量重新赋值，是会把以前的值给覆盖掉，但是在cookie中，我们重新写一个新的key/value的话，是在后面添加一条新的cookie记录，而以前的cookie记录不会消除。
+
+我们利用cookie的记录性，可以扩展一下拖拽事件的demo：
+
+ 
+div {
+	width: 100px;
+	height: 100px;
+	background-color: red;
+	position: absolute;
+	left: 100px;
+	top: 100px;
+}
+CSS
+ 
+var div = document.getElementsByTagName('div')[0];
+var x = getCookie('left'),
+	y = getCookie('top');
+if(x) {
+	div.style.left = x + 'px';
+	div.style.top = y + 'px';
+}
+ 
+div.onmousedown = function (e) {
+	var event = e || window.event,
+		disX = event.clientX - this.offsetLeft,
+		disY = event.clientY - this.offsetTop;
+ 
+	document.onmousemove = function (e) {
+		var event = event || e;
+		var newX = event.clientX - disX;
+		var newY = event.clientY - disY;
+		div.style.left = newX + 'px';
+		div.style.top = newY + 'px';
+	}
+	document.onmouseup = function () {
+		document.onmousemove = null;
+		document.onmouseup = null;
+		setCookie('left', div.offsetLeft, 1);
+		setCookie('top', div.offsetTop, 1);
+	}
+}
