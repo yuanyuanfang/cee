@@ -2,6 +2,23 @@ Webpack
 一、webpack可以看作是模块打包器，把有依赖关系的各种文件打包成一系列的静态资源，它会找到javascript模块以及其他的一些浏览器不能直接运行的拓展语言，（es6 sass等），并将其打包为合适的格式以供浏览器使用。
 二、webpack的配置
 项目下建立一个webpack.config.js
+module.exports = {
+    dvtool: //配置生成Source Maps，选择合适的选项
+    plugins: //插件项
+    entry: //页面入口文件配置
+    output: //入口文件输出配置
+        path: //定义输出文件路径
+        filename: //指定打包文件名称
+    module: //加载器配置,对模块的处理逻辑
+    loaders: //定义了一些列的加载器
+        test: //正则，匹配到文件的后缀名
+        loader/loaders: //处理匹配到的文件
+        include: //包含的文件夹
+        exclude: //排除的文件夹
+    resolve: //其它解决方案的配置
+        extensions: //自动补全识别后缀
+}
+
 每次修改文件，运行webpack后都会生成不一样的hash和chunkhash值，方便上线的时候静态资源的版本管理。
 因为文件名每次运行时都是变化的，文件引入的文件名字也是需要变化的，这时候使用html-webpack-plugin插件 npm install html-webpack-plugin --save-dev
 title : 用来生成页面的title元素
