@@ -1,0 +1,63 @@
+commonJs es2015 amd cmd
+一、commonJs
+	一个文件就是一个模块，拥有单独的作用域，普通方式定义的变量，函数，对象都属于该模块内。
+	可以编写服务端应用，最出名的要数nodeJs了。
+	通过require来加载模块
+	通过exports 和 modul.exports来暴露模块中的内容。
+
+  使用样例1：使用 exports 暴露模块接口
+  exports.hello = function() {
+	  console.log('Hello hangge.com');
+	}
+  var hangge = require('./hangge');
+  hangge.hello();
+
+  使用样例2：使用 modul.exports 暴露模块对象
+  function Hangge() {
+	    var name;
+	    this.setName = function(thyName) {
+	        name = thyName;
+	    };
+	    this.hello = function() {
+	        console.log('Hello ' + name);
+	    };
+	};
+	 
+	module.exports = Hangge;
+	var Hangge = require('./hangge');
+	var hello = new Hangge();
+	hello.setName('hangge.com');
+	hello.hello();
+二、ES2015
+	一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。
+	
+	export 命令用于规定模块的对外接口。
+	import 命令用于输入其他模块提供的功能。
+	ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。
+	export function circumference(radius) {
+	  return 2 * Math.PI * radius;
+	}
+	import {area,circumference} from './hangge';
+	console.log('圆面积：' + area(10));
+
+	使用样例2：使用 export default 命令来输出模块
+	export default function(radius) {
+	  return Math.PI * radius * radius;
+	}
+三、AMD
+  amd全称为异步模块定义,推崇依赖前置，提前执行。用define来定义模块 require
+  cmd全称普通模块定义，推崇依赖就近，延迟执行。exports seajs.use()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
