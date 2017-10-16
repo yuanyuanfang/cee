@@ -1,0 +1,166 @@
+布局
+1.水平居中
+ 方法一、margin:0 auto;
+ 方法二、text-align和inline-block的结合
+ 方法三、position绝对定位来实现居中布局。
+  适用于块级元素不给出宽高的情况下
+ 方法四、利用flex弹性布局的一个属性
+ #parent{
+    display: flex;
+    justify-content: center;
+}
+2.垂直居中
+方法一
+<div class="box box1">
+        <span>垂直居中</span>
+</div>
+.box1{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+方法二
+.box2{
+    display: flex;
+    justify-content:center;
+    align-items:Center;
+}
+方法三、display:inline-block
+.box7{
+  text-align:center;
+  font-size:0;
+}
+.box7 span{
+  vertical-align:middle;
+  display:inline-block;
+  font-size:16px;
+}
+.box7:after{
+  content:'';
+  width:0;
+  height:100%;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+3.水平垂直居中
+ 方法一
+    子元素 div 绝对定位
+	父元素需要被定位
+	子元素 top、bottom、left、right 四个位置值均为 0
+	子元素 margin: auto;
+ 方法二、利用position的绝对定位及负边框来实现。
+4.左边固定 右边自适应的两列布局
+方式一：float+margin的方式
+方式二：float+overflow的方式
+这就是传说中利用BFC的规则来实现两列布局啊啊啊！
+方式三：float+margin+position的方式
+#parent{
+    position: relative;
+}
+#left{
+    float: left;
+    width: 100px;
+    background-color: #ccc;
+}
+#right{
+    position: absolute;
+    top: 0;
+    left: 120px;
+    background-color:pink;
+}
+方式四：flex方式
+#parent{
+    display: flex;
+}
+#left{
+    width: 100px;
+    margin-right: 20px;
+}
+#right{
+    flex: 1;
+}
+5.两边固定中间自适应的三列布局
+方式一：纯float方式
+.left{
+    float: left;
+    width: 200px;
+    height: 200px;
+}
+.right{
+    float: right;
+    width: 100px;
+    height: 100px;
+}
+.middle{
+    margin:0 120px 0 220px;
+}
+方式二：position的绝对定位
+.parent{
+    position: relative;
+}
+.left{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 0;
+    left: 0;
+}
+.right{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+}
+.middle{
+    margin:0 120px 0 220px;
+}
+方式三：flex的弹性布局
+.parent{
+    display: flex;
+}
+.left{
+    width: 200px;
+    height: 200px;
+}
+.right{
+    width: 100px;
+    height: 100px;
+}
+.middle{
+    flex: 1;
+    margin:0 20px; 
+}
+方式四：淘宝双翼布局
+<div class="wrap">
+<div class="main">main</div>
+<div class="left">left</div>
+<div class="right">right</div>
+</div>
+实现要求：主间部分内容的宽度是要自适应的，左、右两边宽度分别为20%，30%  
+.main,.left,.right { float:left;  height:200px; }
+.main { width:100%;  background:#ace; }
+.left { width:20%; background:#eee; }
+.right { width:30%; background:#ddd; }
+
+想要left居左，那么我们可以设置 margin-left:-100%;  即：
+.left { width:20%; background:#eee; margin-left:-100%; }
+说明：这里的100%为main的宽度，相当于是把left给左移了，刚好实现左边与main的对齐。
+
+对于right居右问题，也是类似可以设置margin-left:30%; 即：
+.right { width:30%; background:#ddd; margin-left:-30%; }
+说明：这里的30%为right自身的宽度，相当于是自己向左移了自身的一个宽度，刚好实现右边与main的对齐。
+
+这时，整个布局看起来像是完成了，其实还剩关键的一步，即main的位置该如何设置？目前，他的左边及右边部分元素是会被left/right挡住的，所以我们还必须在main里面再添加一个div(class="mainIn")，设置margin:0 30% 0 20%;，把两边内容给挤开，这样才是完美的效果。
+
+
+
+
+
+
+
+
+
+
+
