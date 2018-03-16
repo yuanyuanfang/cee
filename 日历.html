@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <script src="tools2.js"></script>
+  <style>
+  *{
+    padding: 0px;
+    margin:0px;
+    list-style: none;
+    text-decoration: none;
+  }
+  .wrapper{
+    width: 294px;
+    height: 224px;
+    position: relative;
+    margin:100px auto;
+    /*border:1px solid black;*/
+  }
+  .top{
+    width: 194px;
+    height: 20px;
+    padding-left: 100px;
+    background-color:gray;
+  }
+  .day{
+    width:294px;
+    height: 20px;
+  }
+  .day li{
+    width: 35px;
+    height: 20px;
+    float: left;
+    border:1px solid black;
+    padding-left:5px;
+  }
+  .day li a{
+       font-size: 14px; 
+  }
+  .Ulstyle{
+    width:294px;
+    height: 20px;
+  }
+  .Ulstyle li{
+    width: 35px;
+    height: 20px;
+    float: left;
+    border:1px solid black;
+    padding-left:5px;
+  }
+  .Ulstyle li a{
+     font-size: 14px; 
+  }
+  
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+     <button class="previous">上个月</button>
+      <button class="next">下个月</button>
+    <div class="top">
+    </div>
+    <ul class="day">
+     <li><a href="">周一</a></li>
+     <li><a href="">周二</a></li>
+     <li><a href="">周三</a></li>
+     <li><a href="">周四</a></li>
+     <li><a href="">周五</a></li>
+     <li><a href="" style="color:red">周六</a></li>
+     <li><a href="" style="color:red">周日</a></li>
+    </ul>
+       <div class="computedDay"></div>
+  </div>
+  <script>
+  var previous=document.getElementsByClassName('previous')[0];
+  var next=document.getElementsByClassName('next')[0];  
+  var topDiv=document.getElementsByClassName('top')[0];
+  var divDay=document.getElementsByClassName('computedDay')[0];
+    for(var i=0;i<6;i++){
+      var ul=document.createElement('ul');
+      for(var j=0;j<7;j++){
+        var li=document.createElement('li');
+        var a=document.createElement('a');
+        li.appendChild(a);
+        ul.appendChild(li);
+      }
+      divDay.appendChild(ul);
+    }//动态创建 
+   var oUl=divDay.getElementsByTagName('ul');
+   var oLi=divDay.getElementsByTagName('li');
+   var a=divDay.getElementsByTagName('a');
+   for(var i=0;i<6;i++){
+     oUl[i].setAttribute('class','Ulstyle');
+   }
+    var html;
+    var date = new Date();
+    var year=date.getFullYear();
+    var month=date.getMonth()+1;
+    var date1=date.getDate();
+    var day=date.getDay();
+    var oDay;
+previous.onclick=function(){
+    month--;
+  if(month==0){
+    month=12;
+    year--;
+     nowTime();//显示日期
+     computedTimer(year,12);//显示几号
+  }else{ 
+    nowTime();
+    computedTimer(year,month);
+  } 
+}
+next.onclick=function(){
+     month++;
+  if(month==13){
+    month=1;
+    year++;
+     nowTime();
+     computedTimer(year,1);
+  }else{ 
+    nowTime();
+    computedTimer(year,month);
+  } 
+}
+function nowTime(){
+    html='';
+    topDiv.innerHTML='';
+    html+=year+'年'+month+'月';
+    topDiv.innerText=html;
+}
+nowTime();
+var Day;
+var aDay;
+var space;//1号前面的空格
+var pointDay;//每个月的天数
+function computedDay(year,month){//根据年和月份计算出1号前面有多少空格数
+  Day=String(new Date(year,month-1,1));
+  aDay=Day.substring(0,3);
+  console.log(aDay);
+  switch(aDay){
+    case 'Mon': space=-1;break;
+    case 'Tue':space=0;break;
+    case 'Wed':space=1;break;
+    case 'Thu':space=2;break;
+    case 'Fri':space=3;break;
+    case 'Sat':space=4;break;
+    default:space=5;break;
+  }
+   return space;
+}
+ function computedTimer(year,month){//显示几号
+  space=computedDay(year,month);
+  for(var i=0;i<6;i++){
+    for(var j=0;j<7;j++){
+      oUl[i].children[j].children[0].innerText='';
+      oDay=1;
+      }
+    }
+    if(month==1||month==3||month==5||month==7||month==8||month==10||month==12){
+      pointDay=31;
+    }else if(month==4||month==6||month==9||month==11){
+      pointDay=30;
+    }else if((year%4==0&&year%100!==0)||(year%400==0)){
+      pointDay=29;
+    }else{
+      pointDay=28;
+    }
+    console.log(pointDay);
+    for(var i=0;i<6;i++){
+      for(var j=0;j<7;j++){
+        if(pointDay){
+           if(oDay<pointDay+1){
+                if(i==0&&j<=space){
+                 oUl[0].children[j].children[0].innerText='';  
+               }else{
+                 oUl[i].children[j].children[0].innerText=oDay++;
+               }
+            }
+            }
+           
+        }
+      }
+    }
+
+computedTimer(year,month);
+  </script>
+</body>
+</html>
