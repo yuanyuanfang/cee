@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="ajax.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		ul {
+			width: 1050px;
+			margin: 0 auto;
+		}
+		ul li {
+			width: 212px;
+			float: left;	
+			margin-right: 20px;			
+		}
+		ul li div {
+			width: 200px;
+			border: 1px solid black;
+			padding: 5px;		
+		}
+		ul li img {
+			width: 200px;
+		}
+	</style>
+</head>
+<body>
+	<!-- 固定4列 -->
+	<ul class="wrapper" id="ul1">
+		<li>
+			<div>		
+				<img id="pic" src="http://www.wookmark.com/images/original/555625_wookmark.jpg"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+				<img id="pic" src="http://www.wookmark.com/images/original/555625_wookmark.jpg"></img>
+			</div>			
+		</li>
+		<li>
+			<div>
+				<img id="pic" src="http://www.wookmark.com/images/original/555625_wookmark.jpg"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+				<img id="pic" src="http://www.wookmark.com/images/original/555625_wookmark.jpg"></img>
+			</div>
+		</li>							
+	</ul>
+	<script>
+		
+		//初始化
+		var oLi = document.getElementsByTagName('li');		
+		var loadDone = true;
+		var iPage = 1;		
+		
+		function getMinHeightLi () {
+			var index = 0;
+			//取出第一列高度
+			var currHeight = oLi[index].offsetHeight;			
+			for (var i = 1; i < oLi.length; i++) {
+				if (currHeight > oLi[i].offsetHeight) {
+					currHeight = oLi[i].offsetHeight;
+					index = i;
+				}
+			}
+			// 第 * 列 高度最小
+			return index;
+		}
+		function addImage (data) {
+			var d = JSON.parse(data);
+			for (var i = 0; i<d.length; i++) {
+				// 获取最短的li的索引
+				var index = getMinHeightLi();
+				
+				var oDiv = document.createElement('div');				
+				var oImg = document.createElement('img');
+				//图片的高度是由img内容撑开的但是img加载需要时间（每张图片都不一样） 会慢慢睁开
+				oImg.style.height = (200 / d[i].width) * d[i].height + 'px';
+				oImg.src = d[i].preview; 
+
+				oDiv.appendChild(oImg);
+				var oP = document.createElement('p');
+				oP.innerHTML = d.title;
+				oDiv.appendChild(oP);
+				
+				oLi[index].appendChild(oDiv);
+			}
+			loadDone = true;
+		}
+		/*
+		API:
+		get
+			getPics.php
+		
+				参数
+				cpage : 获取数据的页数
+		*/		
+		function loadImage() {
+			if (loadDone) {
+				loadDone = false;
+				Ajax('get','getPics.php',true,addImage,'?cpage=' + iPage);
+				iPage++;
+				alert('load')	
+			}			
+		}
+		loadImage();
+				
+		//判断滚动条是否进入到可视区域 
+		window.onscroll = function () {
+			// 窗口的高度 + 滚动条的高度 = li最小值时加载
+			var index = getMinHeightLi();
+			var liHeight =  oLi[index].offsetHeight;
+						
+			var scrollHeight = document.documentElement.scrollTop || document.body.scrollTop; 
+			var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+			if ((scrollHeight + clientHeight) >= liHeight) {
+				loadImage();		
+			}
+		}
+	</script>
+</body>
+</html>
